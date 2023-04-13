@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <div className="fixed w-full h-20 shadow-xl z-[100]">
       <div className="flex justify-between items-center w-full h-full px-2 2xl:px-16">
-        <Image src="/../public/assets/CD.png" alt="/" width="50" height="5" />
+        <Image src="/assets/CD.png" alt="/" width="50" height="5" />
         <div>
           <ul className="hidden md:flex">
             <Link href="/">
@@ -43,12 +43,12 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <div className={nav ? 'fixed left-0 top-0 w-full h-screen bg-black/70' : ''}>
-        <div className={nav ? 'fixed left-0 top-0 w-[75%] sm:w-[60%] md:w-[45%] h-screen bg-[#ecf0f3] p-10 ease-in duration-500' : 'fixed left-[-100%] top-0 p-10 ease-in duration-500'}>
+      <div className={nav ? 'md:hidden fixed left-0 top-0 w-full h-screen bg-black/70' : ''}>
+        <div className={nav ? 'left-0 top-0 w-[75%] sm:w-[60%] md:w-[45%] h-screen bg-[#ecf0f3] p-10 ease-in duration-500' : 'fixed left-[-100%] top-0 p-10 ease-in duration-500'}>
           <div>
             <div className="flex w-full items-center justify-between">
               <Image
-                src="/../public/assets/CD.png"
+                src="/assets/CD.png"
                 width="50"
                 height="5"
                 alt="/"
@@ -80,7 +80,7 @@ const Navbar = () => {
                 </Link>
             </ul>
             <div className="pt-40">
-            <p className="uppercase tracking-widest text-[#5651e5]">Let's connect!</p>
+            <p className="tracking-widest text-[#8251e5]">Did we just become best friends?</p>
             <div className="flex items-center justify-between my-4 w-full sm:w-[80%]">
                 <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-105 ease-in duration-300">
                 <FaLinkedinIn />
