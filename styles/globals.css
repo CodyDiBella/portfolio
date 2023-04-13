@@ -12,7 +12,18 @@
   }
 
   h1 {
-    @apply text-4xl sm:text-5xl
+    @apply text-4xl sm:text-5xl md:text-6xl
   }
 
+  h2 {
+    @apply text-3xl sm:text-4xl
+  }
+
+  li {
+    @apply cursor-pointer
+  }
+
+  button {
+    @apply shadow-xl shadow-gray-400 rounded-xl uppercase bg-gradient-to-r from-[#5651e5] to-[#709dff] text-white
+  }
 }
