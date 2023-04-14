@@ -9,7 +9,7 @@ import ProjectItem from "./ProjectItem";
 
 const Projects = () => {
   return (
-    <div className="w-full">
+    <div id="projects" className="w-full">
       <div className="max-w-[1240px] mx-auto px-2 py-16">
         <p className="text-xl tracking-widest uppercase text-[#7d51e5]">
           Projects
@@ -26,18 +26,19 @@ const Projects = () => {
             title="vanity vans"
             backgroundImg={vanityvansImg}
             projectUrl="/vanityvans"
-            tools="React-Redux - psql"
+            tools="React-Redux - PostgreSQL"
           />
           <ProjectItem
             title="Hogwarts Legacy Character Database"
             backgroundImg={hoglegImg}
             projectUrl="/hogleg"
-            tools="Next.js - Supabase"
+            tools="React - PostgreSQL"
           />
           <ProjectItem
             title="The Original Portfolio"
             backgroundImg={ogPortfolioImg}
             projectUrl="/ogPortfolio"
+            tools="Built mostly with vanilla JavaScript and CSS"
           />
         </div>
       </div>
