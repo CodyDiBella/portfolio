@@ -4,12 +4,31 @@ import { AiOutlineClose, AiOutlineMenu, AiOutlineMail } from "react-icons/ai";
 import { FaLinkedinIn, FaGithub } from "react-icons/fa";
 import { BsFillPersonLinesFill } from "react-icons/bs";
 import { Link as ScrollLink } from "react-scroll";
+import { useRouter } from "next/router";
 import Link from "next/link";
 
 
 const Navbar = () => {
     const [nav,setNav] = useState(false)
     const [shadow, setShadow] = useState(false)
+    const [navBg, setNavBg] = useState('#ecf0f3')
+    const [linkColor, setLinkColor] = useState('#1f2937')
+    const router = useRouter()
+
+    useEffect(() => {
+      if(
+        router.asPath === '/aicookbook' ||
+        router.asPath === '/vanityvans' ||
+        router.asPath === '/hogleg' ||
+        router.asPath === '/og' 
+      ) {
+        setNavBg('transparent')
+        setLinkColor('#ecf0f3')
+      } else {
+        setNavBg('#ecf0f3')
+        setLinkColor('#1f2937')
+      }
+    },[router])
 
     const handleNav = () => {
         setNav(!nav)
@@ -27,13 +46,13 @@ const Navbar = () => {
     },[]);
 
   return (
-    <div className={shadow ? 'fixed w-full h-20 shadow-xl z-[100]' : 'fixed w-full h-20 z-[100]'}>
+    <div style={{backgroundColor: `${navBg}`}} className={shadow ? 'fixed w-full h-20 shadow-xl z-[100]' : 'fixed w-full h-20 z-[100]'}>
       <div className="flex justify-between items-center w-full h-full px-2 2xl:px-16">
         <Link href='/'>
         <Image src="/assets/CD.png" alt="/" width="50" height="5" />
         </Link>
         <div>
-          <ul className="hidden md:flex">
+          <ul style={{color: `${linkColor}`}} className="hidden md:flex">
           <ScrollLink to="home" smooth={true} duration={200} offset={-80}>
               <li className="ml-10 text-sm uppercase hover:border-b">Home</li>
             </ScrollLink>
@@ -55,7 +74,7 @@ const Navbar = () => {
               </ScrollLink>
           </ul>
           <div onClick={handleNav} className="md:hidden cursor-pointer">
-            <AiOutlineMenu size={25} />
+            <AiOutlineMenu size={25} style={{color: `${linkColor}`}} />
           </div>
         </div>
       </div>
