@@ -24,7 +24,7 @@ const About = () => {
                     <a href="#projects" className="py-2 text-gray-600 underline cursor-pointer">Check out my latest projects!</a>
                 </div>
                 <div className="w-full h-auto m-auto shadow-xl shadow-gray-400 rounded-xl flex items-center justify-center p-4 hover:scale-110 ease-in duration-100">
-                    <Image className="rounded-xl" src="/assets/codyHan.jpeg" alt="cody" width="700" height="500" />
+                    <Image className="rounded-xl" src="/assets/codyFam.jpeg" alt="cody" width="700" height="500" />
                 </div>
             </div>
         </div>
