@@ -42,26 +42,22 @@ const aicookbook = () => {
             ingredients and repetitive meals, and embrace the power of AI-driven
             innovation in your kitchen!
           </p>
-          <button>
             <a
               href="https://aicookbook.app"
               target="_blank"
               rel="noopener noreferrer"
-              className="m-auto p-4 text-decoration-none"
+              className="m-auto p-4 underline cursor-pointer"
             >
               aicookbook.app
             </a>
-          </button>
-          <button>
             <a
               href="https://github.com/cinnamon-dolce-daredevils/AI-Cookbook"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 m-auto text-decoration-none"
+              className="p-4 m-auto underline cursor-pointer"
             >
               Github
             </a>
-          </button>
         </div>
         <div className="col-span-4 mx-auto md:col-span-1 shadow-xl shadow-gray-400 rounded-xl p-4">
           <div className="p-2">
