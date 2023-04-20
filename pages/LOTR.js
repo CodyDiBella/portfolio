@@ -34,7 +34,7 @@ const LOTR = () => {
               rel="noopener noreferrer"
               className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
-              Pizza Clicker!
+              Lord of the Rings - Fighter
             </a>
         </div>
         <button className="p-2 m-auto">
