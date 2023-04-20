@@ -26,7 +26,7 @@ const og = () => {
         <div className="col-span-4">
           <p>Project</p>
           <h2>Overview</h2>
-          <p>
+          <p className="max-w-[450px]">
           This is the first iteration of my personal portfolio website. I deployed it the 3rd week of Fullstack Academy and added projects to it as I went. I originally made it so that my youngest brother could play games that I made. It was mostly built using vanilla HTML, CSS, and JavaScript, though later projects do feature backend functionality and other tools.
           </p>
             <a

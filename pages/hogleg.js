@@ -26,7 +26,7 @@ const hogleg = () => {
         <div className="col-span-4">
           <p>Project</p>
           <h2>Overview</h2>
-          <p>
+          <p className="max-w-[450px]">
           Introducing Hogwarts Legacy Character Database. Developed as a final project for the junior phase of Fullstack Academy, this interactive database utilizes React and Redux to showcase characters and houses from the game. Explore and engage with your favorite in-game elements while experiencing the magic of Hogwarts Legacy Character Database. Immerse yourself in the enchanting world of Hogwarts and uncover the secrets behind its captivating characters and iconic houses.
           </p>
             <a

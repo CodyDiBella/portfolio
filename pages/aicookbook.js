@@ -11,7 +11,7 @@ const aicookbook = () => {
       <div className="w-screen h-[30vh] lg:h-[40vh] relative">
         <div className="absolute top-0 left-0 w-full h-[30vh] lg:h-[40vh] bg-black/60 z-10" />
         <Image
-          className="absolute z-1"
+          className="absolute z-1 full"
           layout="fill"
           objectFit="cover"
           src={aicookbookImg}
@@ -26,7 +26,7 @@ const aicookbook = () => {
         <div className="col-span-4">
           <p>Project</p>
           <h2>Overview</h2>
-          <p>
+          <p className="max-w-[450px]">
             Introducing AI Cookbook, a groundbreaking app that revolutionizes
             the way you plan your meals. Utilizing cutting-edge artificial
             intelligence, AI Cookbook generates personalized meal suggestions

@@ -26,7 +26,7 @@ const vanityvans = () => {
         <div className="col-span-4">
           <p>Project</p>
           <h2>Overview</h2>
-          <p>
+          <p className="max-w-[450px]">
           Welcome to vanity vans, a one-stop-shop for personalized vans tailored to your unique style. Our easy-to-use platform offers a variety of custom options, ensuring your dream van becomes a reality. With a secure payment system powered by Stripe, you can shop with confidence. Experience the future of van customization at vanity vans!
           </p>
             <a
