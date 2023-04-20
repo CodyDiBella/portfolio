@@ -9,7 +9,7 @@ const vanityvans = () => {
   return (
     <div className="w-full">
       <div className="w-screen h-[30vh] lg:h-[40vh] relative">
-        <div className="absolute top-0 left-0 w-full h-[30vh] lg:h-[40vh] bg-black/80 z-10" />
+        <div className="absolute top-0 left-0 w-full h-[30vh] lg:h-[40vh] bg-black/60 z-10" />
         <Image
           className="absolute z-1"
           layout="fill"
@@ -33,7 +33,7 @@ const vanityvans = () => {
               href="https://vanityvans.onrender.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer"
+              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               vanity vans
             </a>
@@ -41,7 +41,7 @@ const vanityvans = () => {
               href="https://github.com/Dr-Teeth/GraceShopper"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 m-auto underline cursor-pointer"
+              className="p-4 m-auto underline cursor-pointer text-[#8746cd]"
             >
               Github
             </a>

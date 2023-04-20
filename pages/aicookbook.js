@@ -9,7 +9,7 @@ const aicookbook = () => {
   return (
     <div className="w-full">
       <div className="w-screen h-[30vh] lg:h-[40vh] relative">
-        <div className="absolute top-0 left-0 w-full h-[30vh] lg:h-[40vh] bg-black/80 z-10" />
+        <div className="absolute top-0 left-0 w-full h-[30vh] lg:h-[40vh] bg-black/60 z-10" />
         <Image
           className="absolute z-1"
           layout="fill"
@@ -46,7 +46,7 @@ const aicookbook = () => {
               href="https://aicookbook.app"
               target="_blank"
               rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer"
+              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               aicookbook.app
             </a>
@@ -54,7 +54,7 @@ const aicookbook = () => {
               href="https://github.com/cinnamon-dolce-daredevils/AI-Cookbook"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 m-auto underline cursor-pointer"
+              className="p-4 m-auto underline cursor-pointer text-[#8746cd]"
             >
               Github
             </a>
@@ -98,20 +98,18 @@ const aicookbook = () => {
   <div className="relative rounded-lg shadow-xl overflow-hidden aspect-w-16 aspect-h-9 p-2">
     <iframe
       className="rounded w-full h-full"
-      src="https://www.youtube.com/embed/65Efr-cd-C4?list=PLx0iOsdUOUmm3RLOnoRpUArwuuVa5_u9r"
-      title="AI Cookbook video"
+      src="https://www.youtube.com/embed/DQyT2yDL6ME"
+      title="1 Minute Video"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen
     ></iframe>
   </div>
-  {/* Replace this div with the other YouTube video */}
   <div className="relative rounded-lg shadow-xl overflow-hidden aspect-w-16 aspect-h-9 p-2">
-    {/* Replace the src attribute with the other YouTube embed URL */}
     <iframe
       className="rounded w-full h-full"
-      src="https://www.youtube.com/embed/REPLACE_WITH_VIDEO_ID"
-      title="1 Minute Video"
+      src="https://www.youtube.com/embed/65Efr-cd-C4?list=PLx0iOsdUOUmm3RLOnoRpUArwuuVa5_u9r"
+      title="AI Cookbook video"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen

@@ -9,7 +9,7 @@ const hogleg = () => {
   return (
     <div className="w-full">
       <div className="w-screen h-[30vh] lg:h-[40vh] relative">
-        <div className="absolute top-0 left-0 w-full h-[30vh] lg:h-[40vh] bg-black/80 z-10" />
+        <div className="absolute top-0 left-0 w-full h-[30vh] lg:h-[40vh] bg-black/60 z-10" />
         <Image
           className="absolute z-1"
           layout="fill"
@@ -33,7 +33,7 @@ const hogleg = () => {
               href="https://hogleg.onrender.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer"
+              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               Hogwart's Legacy Character Database
             </a>
@@ -41,7 +41,7 @@ const hogleg = () => {
               href="https://github.com/CodyDiBella/HogLeg"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 m-auto underline cursor-pointer"
+              className="p-4 m-auto underline cursor-pointer text-[#8746cd]"
             >
               Github
             </a>
