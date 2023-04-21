@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { Link, Button } from "@nextui-org/react";
 
 const About = () => {
     return (
@@ -21,7 +22,9 @@ const About = () => {
                     <p className="py-2 text-gray-600">
                         I'm a lifelong learner with an insatiable curiosity, eager to dive headfirst into new experiences and cutting-edge innovations. My ability to learn quickly and adapt to new situations is one of my greatest strengths. So, whether it's getting up to speed on the latest technological breakthroughs or simply embracing new challenges, I'm always ready to take the plunge and see where it leads me.
                     </p>
-                    <a href="#projects" className="py-2 text-gray-600 underline cursor-pointer">Check out my latest projects!</a>
+                    <Link href="#projects" >
+                    <Button bordered color="secondary" auto>Check out my latest projects!</Button>
+                    </Link>
                 </div>
                 <div className="w-full h-auto m-auto shadow-xl shadow-gray-400 rounded-xl flex items-center justify-center p-4 hover:scale-110 ease-in duration-100">
                     <Image className="rounded-xl" src="/assets/codyFam.jpeg" alt="cody" width="700" height="500" />

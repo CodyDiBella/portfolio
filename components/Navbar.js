@@ -4,8 +4,10 @@ import { FaLinkedinIn, FaGithub } from "react-icons/fa";
 import { BsFillPersonLinesFill } from "react-icons/bs";
 import { Link as ScrollLink } from "react-scroll";
 import { useRouter } from "next/router";
-import Link from "next/link";
+// import Link from "next/link";
 import Image from "next/image";
+import { Button, Link } from "@nextui-org/react";
+
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
@@ -49,8 +51,8 @@ const Navbar = () => {
       style={{ backgroundColor: `${navBg}` }}
       className={
         shadow
-          ? "fixed w-full h-20 shadow-xl z-[100]"
-          : "fixed w-full h-20 z-[100]"
+          ? "fixed w-full h-20 shadow-xl z-[1000]"
+          : "fixed w-full h-20 z-[1000]"
       }
     >
       <div className="flex justify-between items-center w-full h-full px-2 2xl:px-16">
@@ -64,7 +66,7 @@ const Navbar = () => {
                 <li className="ml-10 text-sm uppercase hover:border-b">Home</li>
               </ScrollLink>
             ) : (
-              <Link href="/#home">
+              <Link block color="secondary" href="/#home">
                 <li className="ml-10 text-sm uppercase hover:border-b cursor-pointer">
                   Home
                 </li>
@@ -77,7 +79,7 @@ const Navbar = () => {
                 </li>
               </ScrollLink>
             ) : (
-              <Link href="/#about">
+              <Link block color="secondary" href="/#about">
                 <li className="ml-10 text-sm uppercase hover:border-b cursor-pointer">
                   About
                 </li>
@@ -90,7 +92,7 @@ const Navbar = () => {
                 </li>
               </ScrollLink>
             ) : (
-              <Link href="/#skills">
+              <Link block color="secondary" href="/#skills">
                 <li className="ml-10 text-sm uppercase hover:border-b cursor-pointer">
                   Skills
                 </li>
@@ -103,7 +105,7 @@ const Navbar = () => {
               </li>
             </ScrollLink>
               ) : (
-                <Link href="/#projects">
+                <Link block color="secondary" href="/#projects">
                 <li className="ml-10 text-sm uppercase hover:border-b cursor-pointer">
                   Projects
                 </li>
@@ -116,7 +118,7 @@ const Navbar = () => {
               </li>
             </ScrollLink>
               ) : (
-                <Link href="/#contact">
+                <Link block color="secondary" href="/#contact">
                 <li className="ml-10 text-sm uppercase hover:border-b cursor-pointer">
                   Contact
                 </li>
@@ -173,7 +175,7 @@ const Navbar = () => {
         </li>
       </ScrollLink>
     ) : (
-      <Link href="/#home">
+      <Link block color="secondary" href="/#home">
         <li onClick={() => setNav(false)} className="py-4 text-sm">
           Home
         </li>
@@ -186,7 +188,7 @@ const Navbar = () => {
         </li>
       </ScrollLink>
     ) : (
-      <Link href="/#about">
+      <Link block color="secondary" href="/#about">
         <li onClick={() => setNav(false)} className="py-4 text-sm">
           About
         </li>
@@ -199,7 +201,7 @@ const Navbar = () => {
         </li>
       </ScrollLink>
     ) : (
-      <Link href="/#skills">
+      <Link block color="secondary" href="/#skills">
         <li onClick={() => setNav(false)} className="py-4 text-sm">
           Skills
         </li>
@@ -212,7 +214,7 @@ const Navbar = () => {
         </li>
       </ScrollLink>
     ) : (
-      <Link href="/#projects">
+      <Link block color="secondary" href="/#projects">
         <li onClick={() => setNav(false)} className="py-4 text-sm">
           Projects
         </li>
@@ -225,7 +227,7 @@ const Navbar = () => {
         </li>
       </ScrollLink>
     ) : (
-      <Link href="/#contact">
+      <Link block color="secondary" href="/#contact">
         <li onClick={() => setNav(false)} className="py-4 text-sm">
           Contact
         </li>
@@ -242,32 +244,32 @@ const Navbar = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-110 ease-in duration-200">
+                  <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-200">
                     <FaLinkedinIn />
-                  </div>
+                  </Button>
                 </a>
                 <a
                   href="https://github.com/codydibella"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-110 ease-in duration-200">
+                  <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-200">
                     <FaGithub />
-                  </div>
+                  </Button>
                 </a>
                 <a href="mailto:codibella@gmail.com">
-                  <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-110 ease-in duration-200">
+                  <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-200">
                     <AiOutlineMail />
-                  </div>
+                  </Button>
                 </a>
                 <a
                   href="https://www.dropbox.com/s/rsz71r75xnghb3k/CodyDiBella_Resume.pdf?dl=0"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <div className="rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer hover:scale-110 ease-in duration-200">
+                  <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-200">
                     <BsFillPersonLinesFill />
-                  </div>
+                  </Button>
                 </a>
               </div>
             </div>

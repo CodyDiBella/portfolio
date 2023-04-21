@@ -2,6 +2,7 @@ import React from "react";
 import { AiOutlineMail } from "react-icons/ai";
 import { BsFillPersonLinesFill } from "react-icons/bs";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
+import { Link, Button } from "@nextui-org/react";
 
 const Main = () => {
   return (
@@ -26,32 +27,32 @@ const Main = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <div className="rounded-full shadow-lg shadow-gray-400 p-6 cursor-pointer hover:scale-110 ease-in duration-100">
+              <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-100">
                 <FaLinkedinIn />
-              </div>
+              </Button>
             </a>
             <a
               href="https://github.com/codydibella"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <div className="rounded-full shadow-lg shadow-gray-400 p-6 cursor-pointer hover:scale-110 ease-in duration-100">
+              <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-100">
                 <FaGithub />
-              </div>
+              </Button>
             </a>
             <a href="mailto:codibella@gmail.com">
-              <div className="rounded-full shadow-lg shadow-gray-400 p-6 cursor-pointer hover:scale-110 ease-in duration-100">
+              <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-100">
                 <AiOutlineMail />
-              </div>
+              </Button>
             </a>
             <a
               href="https://www.dropbox.com/s/rsz71r75xnghb3k/CodyDiBella_Resume.pdf?dl=0"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <div className="rounded-full shadow-lg shadow-gray-400 p-6 cursor-pointer hover:scale-110 ease-in duration-100">
+              <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-100">
                 <BsFillPersonLinesFill />
-              </div>
+              </Button>
             </a>
           </div>
         </div>

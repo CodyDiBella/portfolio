@@ -5,7 +5,7 @@ import { BsFillPersonLinesFill } from "react-icons/bs";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
 import { HiOutlineChevronDoubleUp } from 'react-icons/hi';
 import emailjs, { init } from 'emailjs-com';
-import { Input, Textarea } from '@nextui-org/react'
+import { Input, Textarea, Button } from '@nextui-org/react'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -80,24 +80,24 @@ const Contact = () => {
             </p>
             <div className="flex items-center justify-between py-4">
               <a href="https://www.linkedin.com/in/codydibella/" target="_blank" rel="noopener noreferrer">
-                <div className="rounded-full shadow-lg shadow-gray-400 p-6 cursor-pointer hover:scale-110 ease-in duration-100">
+                <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-Purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-100">
                   <FaLinkedinIn />
-                </div>
+                </Button>
               </a>
               <a href="https://github.com/codydibella" target="_blank" rel="noopener noreferrer">
-                <div className="rounded-full shadow-lg shadow-gray-400 p-6 cursor-pointer hover:scale-110 ease-in duration-100">
+                <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-Purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-100">
                   <FaGithub />
-                </div>
+                </Button>
               </a>
               <a href="mailto:codibella@gmail.com">
-                <div className="rounded-full shadow-lg shadow-gray-400 p-6 cursor-pointer hover:scale-110 ease-in duration-100">
+                <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-Purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-100">
                   <AiOutlineMail />
-                </div>
+                </Button>
               </a>
               <a href="https://www.dropbox.com/s/rsz71r75xnghb3k/CodyDiBella_Resume.pdf?dl=0" target="_blank" rel="noopener noreferrer">
-                <div className="rounded-full shadow-lg shadow-gray-400 p-6 cursor-pointer hover:scale-110 ease-in duration-100">
+                <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-Purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-100">
                   <BsFillPersonLinesFill />
-                </div>
+                </Button>
               </a>
             </div>
           </div>
