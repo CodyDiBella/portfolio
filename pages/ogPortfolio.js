@@ -2,8 +2,9 @@ import React from "react";
 import ogImg from "../public/assets/projects/og.jpeg";
 import Image from "next/image";
 import { RiRadioButtonFill } from "react-icons/ri";
-import Link from "next/link";
+// import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
+import { Link, Spacer } from "@nextui-org/react";
 
 const og = () => {
   return (
@@ -29,14 +30,12 @@ const og = () => {
           <p className="max-w-[450px]">
           This is the first iteration of my personal portfolio website. I deployed it the 3rd week of Fullstack Academy and added projects to it as I went. I originally made it so that my youngest brother could play games that I made. It was mostly built using vanilla HTML, CSS, and JavaScript, though later projects do feature backend functionality and other tools.
           </p>
-            <a
+            <Link block color="secondary" isExternal
               href="https://codydibella.com/"
               target="_blank"
-              rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               Original Portfolio
-            </a>
+            </Link>
         </div>
         <div className="col-span-4 mx-auto md:col-span-1 shadow-xl shadow-gray-400 rounded-xl p-4">
           <div className="p-2">
@@ -58,7 +57,7 @@ const og = () => {
           </div>
         </div>
         <button className="p-2 m-auto">
-          <Link href="/#projects">
+          <Link color="success" href="/#projects">
             <p className="cursor-pointer">Back</p>
           </Link>
         </button>

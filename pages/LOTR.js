@@ -2,8 +2,10 @@ import React from "react";
 import LOTRImg from "../public/assets/games/LOTR.png";
 import Image from "next/image";
 import { RiRadioButtonFill } from "react-icons/ri";
-import Link from "next/link";
+// import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
+import { Link, Spacer } from "@nextui-org/react";
+
 
 const LOTR = () => {
   return (
@@ -28,17 +30,15 @@ const LOTR = () => {
           <p className="max-w-[450px]">
             This was a collaboration between myself and another student at Fullstack Academy. The game is not completely finished, but it is playable. Simply choose a fighter with the dropdown menu, and "Speak friend and enter" (Press the word friend underneath the dropdown menu). This will start the battle. You can click the attack button to attack. The fight will proceed until a fighter is left with no health. To play again, refresh the page.
           </p>
-            <a
+            <Link block color="secondary" isExternal
               href="https://codydibella.com/mon.html"
               target="_blank"
-              rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               Lord of the Rings - Fighter
-            </a>
+            </Link>
         </div>
         <button className="p-2 m-auto">
-          <Link href="/#projects">
+          <Link color="success" href="/#projects">
             <p className="cursor-pointer">Back</p>
           </Link>
         </button>

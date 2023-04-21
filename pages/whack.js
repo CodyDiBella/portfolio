@@ -2,8 +2,9 @@ import React from "react";
 import WhackImg from "../public/assets/games/Whack.png";
 import Image from "next/image";
 import { RiRadioButtonFill } from "react-icons/ri";
-import Link from "next/link";
+// import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
+import { Link, Spacer } from "@nextui-org/react"
 
 const Whack = () => {
   return (
@@ -28,17 +29,15 @@ const Whack = () => {
           <p className="max-w-[450px]">
             This was the first "game" I created. It is a whack a mole clone. The theme is from the tv show "It's Always Sunny In Philadelphia". Click the button that says "Pay the troll toll" to start. Scores will persist if left on the page.
           </p>
-            <a
+            <Link block color="secondary" isExternal
               href="https://codydibella.com/troll.html"
               target="_blank"
-              rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               Pay-Back-A-Troll!
-            </a>
+            </Link>
         </div>
         <button className="p-2 m-auto">
-          <Link href="/#projects">
+          <Link color="success" href="/#projects">
             <p className="cursor-pointer">Back</p>
           </Link>
         </button>

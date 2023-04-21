@@ -5,6 +5,7 @@ import { BsFillPersonLinesFill } from "react-icons/bs";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
 import { HiOutlineChevronDoubleUp } from 'react-icons/hi';
 import emailjs, { init } from 'emailjs-com';
+import { Input, Textarea } from '@nextui-org/react'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -107,22 +108,18 @@ const Contact = () => {
         <form onSubmit={handleSubmit}>
             <div className="grid md:grid-cols-2 gap-4 w-full py-2">
               <div className="flex flex-col">
-                <label className="uppercase text-sm py-2">Name</label>
-                <input
-                  className="border-2 rounded-lg p-3 flex border-gray-300"
+                <Input
                   type="text"
+                  label="Name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
                 />
               </div>
               <div className="flex flex-col">
-                <label className="uppercase text-sm py-2">
-                  Phone Number
-                </label>
-                <input
-                  className="border-2 rounded-lg p-3 flex border-gray-300"
+                <Input
                   type="text"
+                  label="Phone"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
@@ -130,34 +127,30 @@ const Contact = () => {
               </div>
             </div>
             <div className="flex flex-col py-2">
-              <label className="uppercase text-sm py-2">Email</label>
-              <input
-                className="border-2 rounded-lg p-3 flex border-gray-300"
-                type="email"
+              <Input                type="email"
                 name="email"
+                label="Email"
                 value={formData.email}
                 onChange={handleChange}
               />
             </div>
             <div className="flex flex-col py-2">
-              <label className="uppercase text-sm py-2">Subject</label>
-              <input
-                className="border-2 rounded-lg p-3 flex border-gray-300"
+              <Input
                 type="text"
                 name="subject"
+                label="Subject"
                 value={formData.subject}
                 onChange={handleChange}
               />
             </div>
             <div className="flex flex-col py-2">
-              <label className="              uppercase text-sm py-2">Message</label>
-              <textarea
-                className="border-2 rounded-lg p-3 flex border-gray-300"
+              <Textarea
                 rows="10"
                 name="message"
+                label="Message"
                 value={formData.message}
                 onChange={handleChange}
-              ></textarea>
+              />
             </div>
             {submitStatus === 'success' && (
               <p className="text-green-500">

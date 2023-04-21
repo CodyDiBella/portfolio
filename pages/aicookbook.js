@@ -2,8 +2,9 @@ import React from "react";
 import aicookbookImg from "../public/assets/projects/aicookbook.jpeg";
 import Image from "next/image";
 import { RiRadioButtonFill } from "react-icons/ri";
-import Link from "next/link";
+// import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
+import { Link, Spacer } from "@nextui-org/react";
 
 const aicookbook = () => {
   return (
@@ -42,22 +43,19 @@ const aicookbook = () => {
             ingredients and repetitive meals, and embrace the power of AI-driven
             innovation in your kitchen!
           </p>
-            <a
+            <Link block color="secondary" isExternal
               href="https://aicookbook.app"
               target="_blank"
-              rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               aicookbook.app
-            </a>
-            <a
+            </Link>
+            <Spacer />
+            <Link block color="secondary" isExternal
               href="https://github.com/cinnamon-dolce-daredevils/AI-Cookbook"
               target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 m-auto underline cursor-pointer text-[#8746cd]"
             >
               Github
-            </a>
+            </Link>
         </div>
         <div className="col-span-4 mx-auto md:col-span-1 shadow-xl shadow-gray-400 rounded-xl p-4">
           <div className="p-2">
@@ -117,7 +115,7 @@ const aicookbook = () => {
   </div>
 </div>
         <button className="p-2 m-auto">
-          <Link href="/#projects">
+          <Link color="success" href="/#projects">
             <p className="cursor-pointer">Back</p>
           </Link>
         </button>

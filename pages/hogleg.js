@@ -2,8 +2,9 @@ import React from "react";
 import hoglegImg from "../public/assets/projects/hogleg.jpeg";
 import Image from "next/image";
 import { RiRadioButtonFill } from "react-icons/ri";
-import Link from "next/link";
+// import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
+import { Link, Spacer } from "@nextui-org/react";
 
 const hogleg = () => {
   return (
@@ -29,22 +30,19 @@ const hogleg = () => {
           <p className="max-w-[450px]">
           Introducing Hogwarts Legacy Character Database. Developed as a final project for the junior phase of Fullstack Academy, this interactive database utilizes React and Redux to showcase characters and houses from the game. Explore and engage with your favorite in-game elements while experiencing the magic of Hogwarts Legacy Character Database. Immerse yourself in the enchanting world of Hogwarts and uncover the secrets behind its captivating characters and iconic houses.
           </p>
-            <a
+            <Link block color="secondary" isExternal
               href="https://hogleg.onrender.com/"
               target="_blank"
-              rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               Hogwart's Legacy Character Database
-            </a>
-            <a
+            </Link>
+            <Spacer />
+            <Link block color="secondary" isExternal
               href="https://github.com/CodyDiBella/HogLeg"
               target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 m-auto underline cursor-pointer text-[#8746cd]"
             >
               Github
-            </a>
+            </Link>
         </div>
         <div className="col-span-4 mx-auto md:col-span-1 shadow-xl shadow-gray-400 rounded-xl p-4">
           <div className="p-2">
@@ -70,7 +68,7 @@ const hogleg = () => {
           </div>
         </div>
         <button className="p-2 m-auto">
-          <Link href="/#projects">
+          <Link color="success" href="/#projects">
             <p className="cursor-pointer">Back</p>
           </Link>
         </button>

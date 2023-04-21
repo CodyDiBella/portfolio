@@ -2,8 +2,9 @@ import React from "react";
 import pizzaImg from "../public/assets/games/pizzaImg.png";
 import Image from "next/image";
 import { RiRadioButtonFill } from "react-icons/ri";
-import Link from "next/link";
+// import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
+import { Link, Spacer } from "@nextui-org/react"
 
 const pizza = () => {
   return (
@@ -28,17 +29,15 @@ const pizza = () => {
           <p className="max-w-[450px]">
             Click the pizza! It's that simple! Every click will get you one pizza, when you have enough pizzas you can buy powerups, which will grant you more pizza per second.  Continue clicking and buying until your appetite is filled!
           </p>
-            <a
+            <Link block color="secondary" isExternal
               href="https://codydibella.com/pizza.html"
               target="_blank"
-              rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               Pizza Clicker!
-            </a>
+            </Link>
         </div>
         <button className="p-2 m-auto">
-          <Link href="/#projects">
+          <Link color="success" href="/#projects">
             <p className="cursor-pointer">Back</p>
           </Link>
         </button>

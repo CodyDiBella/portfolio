@@ -2,8 +2,9 @@ import React from "react";
 import vanityvansImg from "../public/assets/projects/vanityvans.jpeg";
 import Image from "next/image";
 import { RiRadioButtonFill } from "react-icons/ri";
-import Link from "next/link";
+// import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
+import { Link, Spacer } from "@nextui-org/react";
 
 const vanityvans = () => {
   return (
@@ -29,22 +30,19 @@ const vanityvans = () => {
           <p className="max-w-[450px]">
           Welcome to vanity vans, a one-stop-shop for personalized vans tailored to your unique style. Our easy-to-use platform offers a variety of custom options, ensuring your dream van becomes a reality. With a secure payment system powered by Stripe, you can shop with confidence. Experience the future of van customization at vanity vans!
           </p>
-            <a
+          <Link block color="secondary" isExternal
               href="https://vanityvans.onrender.com/"
               target="_blank"
-              rel="noopener noreferrer"
-              className="m-auto p-4 underline cursor-pointer text-[#8746cd]"
             >
               vanity vans
-            </a>
-            <a
+              </Link>
+            <Spacer />
+            <Link block color="secondary" isExternal
               href="https://github.com/Dr-Teeth/GraceShopper"
               target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 m-auto underline cursor-pointer text-[#8746cd]"
             >
               Github
-            </a>
+            </Link>
         </div>
         <div className="col-span-4 mx-auto md:col-span-1 shadow-xl shadow-gray-400 rounded-xl p-4">
           <div className="p-2">
@@ -70,7 +68,7 @@ const vanityvans = () => {
           </div>
         </div>
         <button className="p-2 m-auto">
-          <Link href="/#projects">
+          <Link color="success" href="/#projects">
             <p className="cursor-pointer">Back</p>
           </Link>
         </button>
