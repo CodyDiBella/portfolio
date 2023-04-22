@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar'
 import '@/styles/globals.css'
 import { createTheme, NextUIProvider } from "@nextui-org/react"
+import Head from 'next/head'
 
 const darkTheme = createTheme({
   type: "dark",
@@ -59,6 +60,9 @@ const lightTheme = createTheme({
 export default function App({ Component, pageProps }) {
   return (
   <>
+        <Head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </Head>
   <NextUIProvider
   defaultTheme="system"
     attribute="class"
