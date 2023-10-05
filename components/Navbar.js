@@ -263,7 +263,7 @@ const Navbar = () => {
                   </Button>
                 </a>
                 <a
-                  href="https://www.dropbox.com/s/rsz71r75xnghb3k/CodyDiBella_Resume.pdf?dl=0"
+                  href="https://www.dropbox.com/scl/fi/ykg26nap7v6ebavv07qbw/CodyDiBella_Resume2023.pdf?rlkey=f1nfh80b880q0ke279haj4khp&dl=0"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
