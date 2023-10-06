@@ -94,7 +94,7 @@ const Contact = () => {
                   <AiOutlineMail />
                 </Button>
               </a>
-              <a href="https://www.dropbox.com/s/rsz71r75xnghb3k/CodyDiBella_Resume.pdf?dl=0" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.dropbox.com/scl/fi/ykg26nap7v6ebavv07qbw/CodyDiBella_Resume2023.pdf?rlkey=f1nfh80b880q0ke279haj4khp&dl=0" target="_blank" rel="noopener noreferrer">
                 <Button bordered color="secondary" auto className="rounded-full shadow-lg shadow-Purple-400 p-3 cursor-pointer hover:scale-110 ease-in duration-100">
                   <BsFillPersonLinesFill />
                 </Button>
