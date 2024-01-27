@@ -71,9 +71,14 @@ const Tracker = () => {
         <h2>Hourly Total</h2>
         <p>{getCurrentHourlyTotal()}</p>
       </div>
+      <div style={{ marginTop: "20px" }}>
+        <button className="action-btn top-left" onClick={handleReset}>Reset</button>
+        <button className="action-btn top-right" onClick={handleSubtract}>Subtract</button>
+        <button className="action-btn bottom-middle" onClick={handleAdd}>Add</button>
+      </div>
       <div>
         <h2>Timeline</h2>
-        <button onClick={handleToggleOverlay}>Show Times</button>
+        <button className="action-btn" onClick={handleToggleOverlay}>Show Times</button>
         {showOverlay && (
           <div className="overlay">
             <button onClick={handleToggleOverlay}>X</button>
@@ -84,11 +89,6 @@ const Tracker = () => {
             </ul>
           </div>
         )}
-      </div>
-      <div>
-        <button className="action-btn" onClick={handleAdd}>Add</button>
-        <button className="action-btn" onClick={handleSubtract}>Subtract</button>
-        <button className="action-btn" onClick={handleReset}>Reset</button>
       </div>
       <style jsx>{`
         .overlay {
@@ -112,6 +112,22 @@ const Tracker = () => {
           margin: 5px;
           padding: 10px;
           font-size: 16px;
+        }
+
+        .top-left {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+
+        .top-right {
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
+
+        .bottom-middle {
+          margin-top: 20px;
         }
       `}</style>
     </div>
