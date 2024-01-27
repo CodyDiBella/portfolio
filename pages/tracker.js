@@ -112,15 +112,20 @@ const Tracker = () => {
         }
 
         .bottom-center {
-          margin-center: auto;
+          position: absolute;
+          bottom: 0;
         }
 
         .bottom-left {
-          margin-right: auto;
+          position: absolute;
+          bottom: 0;
+          left: 0;
         }
 
         .bottom-right {
-          margin-left: auto;
+          position: absolute;
+          bottom: 0;
+          right: 0
         }
       `}</style>
     </div>
