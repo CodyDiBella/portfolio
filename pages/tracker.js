@@ -50,7 +50,7 @@ const Tracker = () => {
   };
 
   return (
-    <div style={{ textAlign: "center", paddingTop: "60px" }}>
+    <div style={{ textAlign: "center", paddingTop: "40px" }}>
       <h1>Tracker Page</h1>
       <div>
         <h2>Hourly Counters</h2>
@@ -72,13 +72,17 @@ const Tracker = () => {
         <p>{getCurrentHourlyTotal()}</p>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
-        <button className="action-btn bottom-right" onClick={handleSubtract}>Subtract</button>
-        <button className="action-btn bottom-middle" onClick={handleAdd}>Add</button>
+        <button className="action-btn top-left" onClick={handleReset}>Reset</button>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button className="action-btn bottom-center" onClick={handleSubtract}>Subtract</button>
+          <button className="action-btn bottom-center" onClick={handleAdd}>Add</button>
+        </div>
       </div>
       <div>
         <h2>Timeline</h2>
-        <button className="action-btn" onClick={handleToggleOverlay}>Show Times</button>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <button className="action-btn bottom-right" onClick={handleToggleOverlay}>Show Times</button>
+        </div>
         {showOverlay && (
           <div className="overlay">
             <button onClick={handleToggleOverlay}>X</button>
@@ -114,20 +118,18 @@ const Tracker = () => {
           font-size: 16px;
         }
 
-        .bottom-left {
+        .top-left {
           position: absolute;
-          bottom: 0;
+          top: 0;
           left: 0;
         }
 
-        .bottom-right {
-          position: absolute;
-          bottom: 0;
-          right: 0;
+        .bottom-center {
+          margin: 0 5px;
         }
 
-        .bottom-middle {
-          margin-top: 20px;
+        .bottom-right {
+          margin-left: auto;
         }
       `}</style>
     </div>
@@ -135,6 +137,4 @@ const Tracker = () => {
 };
 
 export default Tracker;
-
-
 
