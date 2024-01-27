@@ -1,25 +1,13 @@
-import React, { useState, useEffect } from "react";
+ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
 
 const Tracker = () => {
-  // Retrieve data from localStorage or use default values
-  const storedCount = parseInt(localStorage.getItem("count")) || 0;
-  const storedTimeline = JSON.parse(localStorage.getItem("timeline")) || [];
-  const storedHourCounters = JSON.parse(localStorage.getItem("hourCounters")) || Array(24).fill(0);
-
-  const [count, setCount] = useState(storedCount);
-  const [timeline, setTimeline] = useState(storedTimeline);
-  const [hourCounters, setHourCounters] = useState(storedHourCounters);
+  const [count, setCount] = useState(0);
+  const [timeline, setTimeline] = useState([]);
+  const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
   const [shiftTotal, setShiftTotal] = useState(0);
   const [hoveredHour, setHoveredHour] = useState(null);
-
-  useEffect(() => {
-    // Update localStorage when count, timeline, or hourCounters change
-    localStorage.setItem("count", count.toString());
-    localStorage.setItem("timeline", JSON.stringify(timeline));
-    localStorage.setItem("hourCounters", JSON.stringify(hourCounters));
-  }, [count, timeline, hourCounters]);
 
   const handleAdd = () => {
     const now = new Date();
