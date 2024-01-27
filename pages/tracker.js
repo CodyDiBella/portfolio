@@ -93,7 +93,7 @@ const Tracker = () => {
           <p style={{ fontSize: "80px" }}>{getCurrentHourlyTotal()}</p>
         </div>
       </div>
-      <div style={{ marginTop: "20px", textAlign: "center" }}>
+      <div style={{ marginTop: "20px", fontSize: "60px", textAlign: "center" }}>
         <button className="action-btn" onClick={handleAdd}>+</button>
       </div>
       <div style={{ marginTop: "20px" }}>
