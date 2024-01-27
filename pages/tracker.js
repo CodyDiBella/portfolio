@@ -68,9 +68,9 @@ const Tracker = () => {
         <p>{shiftTotal}</p>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <button className="action-btn bottom-centerL" onClick={handleSubtract}>-</button>
-          <button className="action-btn bottom-centerR" onClick={handleAdd}>+</button>
+        <div style={{ position: "absolute", bottom: 0, left: 0 }}>
+          <button className="action-btn" onClick={handleSubtract}>-</button>
+          <button className="action-btn" onClick={handleAdd}>+</button>
         </div>
       </div>
       <div style={{ marginTop: "20px" }}>
@@ -111,17 +111,6 @@ const Tracker = () => {
           font-size: 16px;
         }
 
-        .bottom-centerL {
-          position: absolute;
-          bottom: 0;
-          left: -500;
-        }
-
-        .bottom-centerR {
-          position: absolute;
-          bottom: 0;
-        }
-
         .bottom-left {
           position: absolute;
           bottom: 0;
@@ -131,7 +120,7 @@ const Tracker = () => {
         .bottom-right {
           position: absolute;
           bottom: 0;
-          right: 0
+          right: 0;
         }
       `}</style>
     </div>
@@ -139,3 +128,4 @@ const Tracker = () => {
 };
 
 export default Tracker;
+
