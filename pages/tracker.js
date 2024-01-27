@@ -3,15 +3,17 @@ import React, { useState, useEffect } from "react";
 const Tracker = () => {
   const [count, setCount] = useState(0);
   const [timeline, setTimeline] = useState([]);
-  const [hourCounters, setHourCounters] = useState(Array(12).fill(0));
+  const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
+  const [shiftTotal, setShiftTotal] = useState(0);
 
   const handleAdd = () => {
     const now = new Date();
     setCount(count + 1);
+    setShiftTotal(shiftTotal + 1);
     setTimeline([...timeline, now]);
     setHourCounters((prevCounters) => {
       const updatedCounters = [...prevCounters];
-      updatedCounters[now.getHours() % 12] += 1;
+      updatedCounters[now.getHours()] += 1;
       return updatedCounters;
     });
   };
@@ -20,10 +22,11 @@ const Tracker = () => {
     if (count > 0) {
       const lastMark = timeline[timeline.length - 1];
       setCount(count - 1);
+      setShiftTotal(shiftTotal - 1);
       setTimeline(timeline.slice(0, -1));
       setHourCounters((prevCounters) => {
         const updatedCounters = [...prevCounters];
-        updatedCounters[lastMark.getHours() % 12] -= 1;
+        updatedCounters[lastMark.getHours()] -= 1;
         return updatedCounters;
       });
     }
@@ -31,8 +34,9 @@ const Tracker = () => {
 
   const handleReset = () => {
     setCount(0);
+    setShiftTotal(0);
     setTimeline([]);
-    setHourCounters(Array(12).fill(0));
+    setHourCounters(Array(24).fill(0));
   };
 
   return (
@@ -49,11 +53,15 @@ const Tracker = () => {
         <div style={{ display: "flex", justifyContent: "center" }}>
           {hourCounters.map((counter, hour) => (
             <div key={hour} style={{ margin: "0 10px" }}>
-              <p>{(hour % 12) || 12} {hour < 12 ? "AM" : "PM"}</p>
+              <p>{hour % 12 || 12} {hour < 12 ? "AM" : "PM"}</p>
               <p>{counter}</p>
             </div>
           ))}
         </div>
+      </div>
+      <div>
+        <h2>Shift Total</h2>
+        <p>{shiftTotal}</p>
       </div>
       <div>
         <h2>Timeline</h2>
@@ -68,3 +76,4 @@ const Tracker = () => {
 };
 
 export default Tracker;
+
