@@ -65,9 +65,9 @@ const Tracker = () => {
       </div>
       <div style={{ textAlign: "center", paddingBottom: "80px", fontSize: "24px" }}>
         <h2>Shift Total</h2>
-        <p>{shiftTotal}</p>
+        <pstyle={{ fontSize: "60px" }}>{shiftTotal}</p>
         <h2>Hourly Total</h2>
-        <p>{getCurrentHourlyTotal()}</p>
+        <pstyle={{ fontSize: "80px" }}>{getCurrentHourlyTotal()}</p>
       </div>
       <div style={{ marginTop: "20px", textAlign: "center" }}>
         <button className="action-btn" onClick={handleSubtract}>-</button>
