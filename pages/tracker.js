@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
 
 const Tracker = () => {
@@ -53,10 +54,12 @@ const Tracker = () => {
   return (
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>New Ticket Tracking Buddy</h1>
-        <Image
-          src={trackerImg}
-          alt="/"
-        />
+      <Image
+        src={trackerImg}
+        alt="/"
+        width={300}
+        height={200}
+      />
       <div>
         <h2>Hourly Counters</h2>
         <div style={{ display: "flex", justifyContent: "center", paddingTop: "30px" }}>
