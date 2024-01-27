@@ -63,7 +63,7 @@ const Tracker = () => {
           ))}
         </div>
       </div>
-      <div>
+      <div style={{ textAlign: "center", paddingBottom: "80px" }}>
         <h2>Shift Total</h2>
         <p>{shiftTotal}</p>
       </div>
@@ -114,7 +114,7 @@ const Tracker = () => {
         .bottom-centerL {
           position: absolute;
           bottom: 0;
-          left: 500;
+          left: -500;
         }
 
         .bottom-centerR {
