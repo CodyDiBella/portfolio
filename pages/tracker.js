@@ -58,18 +58,20 @@ const Tracker = () => {
           {hourCounters.map((counter, hour) => (
             <div key={hour} style={{ margin: "0 10px" }}>
               <p>{hour % 12 || 12} {hour < 12 ? "AM" : "PM"}</p>
-              <p>{counter}</p>
+              <p style={{ fontSize: "20px" }}>{counter}</p>
             </div>
           ))}
         </div>
       </div>
-      <div style={{ textAlign: "center", paddingBottom: "80px" }}>
+      <div style={{ textAlign: "center", paddingBottom: "80px", fontSize: "24px" }}>
         <h2>Shift Total</h2>
         <p>{shiftTotal}</p>
+        <h2>Hourly Total</h2>
+        <p>{getCurrentHourlyTotal()}</p>
       </div>
       <div style={{ marginTop: "20px", textAlign: "center" }}>
-          <button className="action-btn" onClick={handleSubtract}>-</button>
-          <button className="action-btn" onClick={handleAdd}>+</button>
+        <button className="action-btn" onClick={handleSubtract}>-</button>
+        <button className="action-btn" onClick={handleAdd}>+</button>
       </div>
       <div style={{ marginTop: "20px" }}>
         <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
@@ -104,9 +106,9 @@ const Tracker = () => {
         }
 
         .action-btn {
-          margin: 5px;
-          padding: 10px;
-          font-size: 16px;
+          margin: 10px;
+          padding: 20px;
+          font-size: 20px;
         }
 
         .bottom-left {
