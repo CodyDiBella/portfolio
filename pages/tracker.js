@@ -44,8 +44,13 @@ const Tracker = () => {
     setShowOverlay(!showOverlay);
   };
 
+  const getCurrentHourlyTotal = () => {
+    const currentHour = new Date().getHours();
+    return hourCounters[currentHour];
+  };
+
   return (
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center", paddingTop: "20px" }}>
       <h1>Tracker Page</h1>
       <div>
         <h2>Hourly Counters</h2>
@@ -63,6 +68,10 @@ const Tracker = () => {
         <p>{shiftTotal}</p>
       </div>
       <div>
+        <h2>Hourly Total</h2>
+        <p>{getCurrentHourlyTotal()}</p>
+      </div>
+      <div>
         <h2>Timeline</h2>
         <button onClick={handleToggleOverlay}>Show Times</button>
         {showOverlay && (
@@ -77,9 +86,9 @@ const Tracker = () => {
         )}
       </div>
       <div>
-        <button onClick={handleAdd}>Add</button>
-        <button onClick={handleSubtract}>Subtract</button>
-        <button onClick={handleReset}>Reset</button>
+        <button className="action-btn" onClick={handleAdd}>Add</button>
+        <button className="action-btn" onClick={handleSubtract}>Subtract</button>
+        <button className="action-btn" onClick={handleReset}>Reset</button>
       </div>
       <style jsx>{`
         .overlay {
@@ -98,11 +107,18 @@ const Tracker = () => {
         .overlay button {
           margin-bottom: 10px;
         }
+
+        .action-btn {
+          margin: 5px;
+          padding: 10px;
+          font-size: 16px;
+        }
       `}</style>
     </div>
   );
 };
 
 export default Tracker;
+
 
 
