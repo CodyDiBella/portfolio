@@ -54,9 +54,6 @@ const Tracker = () => {
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>New Ticket Tracking Buddy</h1>
         <Image
-          className="absolute z-1"
-          layout="fill"
-          objectFit="cover"
           src={trackerImg}
           alt="/"
         />
