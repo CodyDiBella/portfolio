@@ -103,12 +103,12 @@ const Tracker = () => {
       <style jsx>{`
         .bubble {
           position: absolute;
-          background-color: #333;
+          background-color: gray;
           border: 1px solid #555;
           padding: 10px;
           z-index: 1;
           border-radius: 15px;
-          color: #fff;
+          color: white;
         }
 
         .bubble ul {
