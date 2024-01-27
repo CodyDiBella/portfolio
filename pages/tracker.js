@@ -8,15 +8,6 @@ const Tracker = () => {
   const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
   const [shiftTotal, setShiftTotal] = useState(0);
   const [hoveredHour, setHoveredHour] = useState(null);
-  const [currentTime, setCurrentTime] = useState(getFormattedTime());
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(getFormattedTime());
-    }, 60000);
-
-    return () => clearInterval(intervalId);
-  }, []);
 
   const handleAdd = () => {
     const now = new Date();
@@ -60,21 +51,15 @@ const Tracker = () => {
     return hourCounters[currentHour];
   };
 
-  const getFormattedTime = () => {
-    const now = new Date();
-    const hours = now.getHours() % 12 || 12;
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    const ampm = now.getHours() < 12 ? "AM" : "PM";
-
-    return `${hours}:${minutes} ${ampm}`;
-  };
-
   return (
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>New Ticket Tracking Buddy</h1>
       <div style={{ display: "flex", padding: "30px", justifyContent: "center", alignItems: "center" }}>
-        <Image src={trackerImg} alt="Tracker Image" width={200} />
-        <p style={{ fontSize: "20px", marginLeft: "20px" }}>{currentTime}</p>
+        <Image
+          src={trackerImg}
+          alt="Tracker Image"
+          width={200}
+        />
       </div>
       <div>
         <h2>Hourly Counters</h2>
