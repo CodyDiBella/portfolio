@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import trackerImg from "../assets/games/trackerImg.png";
+import trackerImg from "../public/assets/games/trackerImg.png";
 
 const Tracker = () => {
   const [count, setCount] = useState(0);
