@@ -54,7 +54,7 @@ const Tracker = () => {
       <h1>Tracker Page</h1>
       <div>
         <h2>Hourly Counters</h2>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: "30px" }}>
           {hourCounters.map((counter, hour) => (
             <div key={hour} style={{ margin: "0 10px" }}>
               <p>{hour % 12 || 12} {hour < 12 ? "AM" : "PM"}</p>
@@ -63,7 +63,7 @@ const Tracker = () => {
           ))}
         </div>
       </div>
-      <div style={{ textAlign: "center", paddingBottom: "80px", fontSize: "24px" }}>
+      <div style={{ display: "flex", justifyContent: "center", textAlign: "center", fontSize: "24px", paddingTop: "30px" }}>
         <h2>Shift Total</h2>
         <p style={{ fontSize: "60px" }}>{shiftTotal}</p>
         <h2>Hourly Total</h2>
