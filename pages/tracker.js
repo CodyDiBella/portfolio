@@ -5,7 +5,6 @@ const Tracker = () => {
   const [timeline, setTimeline] = useState([]);
   const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
   const [shiftTotal, setShiftTotal] = useState(0);
-  const [showOverlay, setShowOverlay] = useState(false);
 
   const handleAdd = () => {
     const now = new Date();
@@ -40,10 +39,6 @@ const Tracker = () => {
     setHourCounters(Array(24).fill(0));
   };
 
-  const handleToggleOverlay = () => {
-    setShowOverlay(!showOverlay);
-  };
-
   const getCurrentHourlyTotal = () => {
     const currentHour = new Date().getHours();
     return hourCounters[currentHour];
@@ -56,9 +51,9 @@ const Tracker = () => {
         <h2>Hourly Counters</h2>
         <div style={{ display: "flex", justifyContent: "center" }}>
           {hourCounters.map((counter, hour) => (
-            <div key={hour} style={{ margin: "0 10px" }}>
+            <div key={hour} style={{ margin: "0 10px", position: "relative" }}>
               <p>{hour % 12 || 12} {hour < 12 ? "AM" : "PM"}</p>
-              <p>{counter}</p>
+              <p className="counter" title={`Times: ${getHourlyTimes(hour)}`}>{counter}</p>
             </div>
           ))}
         </div>
@@ -68,41 +63,13 @@ const Tracker = () => {
         <p>{shiftTotal}</p>
       </div>
       <div style={{ marginTop: "20px", textAlign: "center" }}>
-          <button className="action-btn" onClick={handleSubtract}>-</button>
-          <button className="action-btn" onClick={handleAdd}>+</button>
+        <button className="action-btn" onClick={handleSubtract}>-</button>
+        <button className="action-btn" onClick={handleAdd}>+</button>
       </div>
       <div style={{ marginTop: "20px" }}>
         <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
-        <button className="action-btn bottom-right" onClick={handleToggleOverlay}>Show Times</button>
       </div>
-      {showOverlay && (
-        <div className="overlay">
-          <button onClick={handleToggleOverlay}>X</button>
-          <ul>
-            {timeline.map((mark, index) => (
-              <li key={index}>{mark.toLocaleTimeString()}</li>
-            ))}
-          </ul>
-        </div>
-      )}
       <style jsx>{`
-        .overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.5);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .overlay button {
-          margin-bottom: 10px;
-        }
-
         .action-btn {
           margin: 5px;
           padding: 10px;
@@ -115,10 +82,19 @@ const Tracker = () => {
           left: 0;
         }
 
-        .bottom-right {
+        .counter:hover:after {
+          content: attr(title);
           position: absolute;
-          bottom: 0;
-          right: 0;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 5px;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          white-space: nowrap;
+          z-index: 1;
         }
       `}</style>
     </div>
@@ -126,5 +102,3 @@ const Tracker = () => {
 };
 
 export default Tracker;
-
-
