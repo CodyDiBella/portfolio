@@ -60,7 +60,7 @@ const Tracker = () => {
     return hourCounters[currentHour];
   };
 
-   const getFormattedTime = () => {
+  const getFormattedTime = () => {
     const now = new Date();
     const hours = now.getHours() % 12 || 12;
     const minutes = now.getMinutes().toString().padStart(2, "0");
@@ -68,17 +68,13 @@ const Tracker = () => {
 
     return `${hours}:${minutes} ${ampm}`;
   };
- 
+
   return (
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>New Ticket Tracking Buddy</h1>
       <div style={{ display: "flex", padding: "30px", justifyContent: "center", alignItems: "center" }}>
-        <Image
-          src={trackerImg}
-          alt="Tracker Image"
-          width={200}
-        />
-           <p style={{ fontSize: "20px", marginLeft: "20px" }}>{currentTime}</p>
+        <Image src={trackerImg} alt="Tracker Image" width={200} />
+        <p style={{ fontSize: "20px", marginLeft: "20px" }}>{currentTime}</p>
       </div>
       <div>
         <h2>Hourly Counters</h2>
