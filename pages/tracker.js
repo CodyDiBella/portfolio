@@ -50,7 +50,7 @@ const Tracker = () => {
   };
 
   return (
-    <div style={{ textAlign: "center", paddingTop: "40px" }}>
+    <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>Tracker Page</h1>
       <div>
         <h2>Hourly Counters</h2>
@@ -112,7 +112,7 @@ const Tracker = () => {
         }
 
         .bottom-center {
-          margin: 0 5px;
+          margin-center: auto;
         }
 
         .bottom-left {
