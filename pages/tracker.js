@@ -68,15 +68,13 @@ const Tracker = () => {
         <p>{shiftTotal}</p>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <div style={{ position: "absolute", bottom: 0, left: 0 }}>
-          <button className="action-btn" onClick={handleSubtract}>-</button>
-        </div>
-        <div style={{ position: "absolute", bottom: 0, right: 0 }}>
-          <button className="action-btn" onClick={handleAdd}>+</button>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button className="action-btn bottom-centerL" onClick={handleSubtract}>-</button>
+          <button className="action-btn bottom-centerR" onClick={handleAdd}>+</button>
         </div>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <button className="action-btn bottom-center" onClick={handleReset}>Reset</button>
+        <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
         <button className="action-btn bottom-right" onClick={handleToggleOverlay}>Show Times</button>
       </div>
       {showOverlay && (
@@ -113,15 +111,27 @@ const Tracker = () => {
           font-size: 16px;
         }
 
-        .bottom-center {
+        .bottom-centerL {
           position: absolute;
           bottom: 0;
+          left: 50;
+        }
+
+        .bottom-centerR {
+          position: absolute;
+          bottom: 0;
+        }
+
+        .bottom-left {
+          position: absolute;
+          bottom: 0;
+          left: 0;
         }
 
         .bottom-right {
           position: absolute;
           bottom: 0;
-          right: 0;
+          right: 0
         }
       `}</style>
     </div>
@@ -129,4 +139,3 @@ const Tracker = () => {
 };
 
 export default Tracker;
-
