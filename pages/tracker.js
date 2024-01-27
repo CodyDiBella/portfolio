@@ -3,11 +3,21 @@ import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
 
 const Tracker = () => {
-  const [count, setCount] = useState(0);
-  const [timeline, setTimeline] = useState([]);
-  const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
+  const storedCount = parseInt(localStorage.getItem("count")) || 0;
+  const storedTimeline = JSON.parse(localStorage.getItem("timeline")) || [];
+  const storedHourCounters = JSON.parse(localStorage.getItem("hourCounters")) || Array(24).fill(0);
+
+  const [count, setCount] = useState(storedCount);
+  const [timeline, setTimeline] = useState(storedTimeline);
+  const [hourCounters, setHourCounters] = useState(storedHourCounters);
   const [shiftTotal, setShiftTotal] = useState(0);
   const [hoveredHour, setHoveredHour] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("count", count.toString());
+    localStorage.setItem("timeline", JSON.stringify(timeline));
+    localStorage.setItem("hourCounters", JSON.stringify(hourCounters));
+  }, [count, timeline, hourCounters]);
 
   const handleAdd = () => {
     const now = new Date();
@@ -103,12 +113,12 @@ const Tracker = () => {
       <style jsx>{`
         .bubble {
           position: absolute;
-          background-color: gray;
-          border: 1px solid #555;
+          background-color: #333;
+          border: 1px solid purple;
           padding: 10px;
           z-index: 1;
           border-radius: 15px;
-          color: white;
+          color: #fff;;
         }
 
         .bubble ul {
@@ -143,3 +153,4 @@ const Tracker = () => {
 };
 
 export default Tracker;
+
