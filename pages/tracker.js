@@ -67,11 +67,9 @@ const Tracker = () => {
         <h2>Shift Total</h2>
         <p>{shiftTotal}</p>
       </div>
-      <div style={{ marginTop: "20px" }}>
-        <div className="bottom">
+      <div style={{ marginTop: "20px", textAlign: "center" }}>
           <button className="action-btn" onClick={handleSubtract}>-</button>
           <button className="action-btn" onClick={handleAdd}>+</button>
-        </div>
       </div>
       <div style={{ marginTop: "20px" }}>
         <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
@@ -115,11 +113,6 @@ const Tracker = () => {
           position: absolute;
           bottom: 0;
           left: 0;
-        }
-
-        .bottom {
-          position: absolute;
-          bottom: 0;
         }
 
         .bottom-right {
