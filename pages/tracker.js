@@ -54,7 +54,7 @@ const Tracker = () => {
   return (
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>New Ticket Tracking Buddy</h1>
-       <div style={{ display: "flex", padding: "30px", justifyContent: "center", alignItems: "center" }}>
+      <div style={{ display: "flex", padding: "30px", justifyContent: "center", alignItems: "center" }}>
         <Image
           src={trackerImg}
           alt="Tracker Image"
@@ -103,10 +103,12 @@ const Tracker = () => {
       <style jsx>{`
         .bubble {
           position: absolute;
-          background-color: white;
-          border: 1px solid #ccc;
+          background-color: #333; /* Background color */
+          border: 1px solid #555; /* Border color */
           padding: 10px;
           z-index: 1;
+          border-radius: 15px; /* Rounded corners */
+          color: #fff; /* Text color */
         }
 
         .bubble ul {
