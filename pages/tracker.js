@@ -54,11 +54,11 @@ const Tracker = () => {
   return (
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>New Ticket Tracking Buddy</h1>
-       <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+       <div style={{ display: "flex", padding: "30px", justifyContent: "center", alignItems: "center" }}>
         <Image
           src={trackerImg}
           alt="Tracker Image"
-          width={150}
+          width={200}
         />
       </div>
       <div>
@@ -94,11 +94,11 @@ const Tracker = () => {
         </div>
       </div>
       <div style={{ marginTop: "20px", textAlign: "center" }}>
-        <button className="action-btn" onClick={handleSubtract}>-</button>
         <button className="action-btn" onClick={handleAdd}>+</button>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
+        <button className="action-btn bottom-left" onClick={handleSubtract}>-</button>
+        <button className="action-btn bottom-right" onClick={handleReset}>Reset</button>
       </div>
       <style jsx>{`
         .bubble {
@@ -128,6 +128,12 @@ const Tracker = () => {
           position: absolute;
           bottom: 0;
           left: 0;
+        }
+
+        .bottom-right {
+          position: absolute;
+          bottom: 0;
+          right: 0;
         }
       `}</style>
     </div>
