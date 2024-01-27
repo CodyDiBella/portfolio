@@ -3,6 +3,7 @@ import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
 
 const Tracker = () => {
+  // Retrieve data from localStorage or use default values
   const storedCount = parseInt(localStorage.getItem("count")) || 0;
   const storedTimeline = JSON.parse(localStorage.getItem("timeline")) || [];
   const storedHourCounters = JSON.parse(localStorage.getItem("hourCounters")) || Array(24).fill(0);
@@ -14,6 +15,7 @@ const Tracker = () => {
   const [hoveredHour, setHoveredHour] = useState(null);
 
   useEffect(() => {
+    // Update localStorage when count, timeline, or hourCounters change
     localStorage.setItem("count", count.toString());
     localStorage.setItem("timeline", JSON.stringify(timeline));
     localStorage.setItem("hourCounters", JSON.stringify(hourCounters));
@@ -113,12 +115,12 @@ const Tracker = () => {
       <style jsx>{`
         .bubble {
           position: absolute;
-          background-color: #333;
-          border: 1px solid purple;
+          background-color: gray;
+          border: 1px solid #555;
           padding: 10px;
           z-index: 1;
           border-radius: 15px;
-          color: #fff;;
+          color: white;
         }
 
         .bubble ul {
@@ -153,4 +155,3 @@ const Tracker = () => {
 };
 
 export default Tracker;
-
