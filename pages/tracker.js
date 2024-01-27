@@ -5,6 +5,7 @@ const Tracker = () => {
   const [timeline, setTimeline] = useState([]);
   const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
   const [shiftTotal, setShiftTotal] = useState(0);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const handleAdd = () => {
     const now = new Date();
@@ -39,15 +40,13 @@ const Tracker = () => {
     setHourCounters(Array(24).fill(0));
   };
 
+  const handleToggleOverlay = () => {
+    setShowOverlay(!showOverlay);
+  };
+
   return (
     <div style={{ textAlign: "center" }}>
       <h1>Tracker Page</h1>
-      <div>
-        <p>Count: {count}</p>
-        <button onClick={handleAdd}>Add</button>
-        <button onClick={handleSubtract}>Subtract</button>
-        <button onClick={handleReset}>Reset</button>
-      </div>
       <div>
         <h2>Hourly Counters</h2>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -65,15 +64,45 @@ const Tracker = () => {
       </div>
       <div>
         <h2>Timeline</h2>
-        <select>
-          {timeline.map((mark, index) => (
-            <option key={index}>{mark.toLocaleTimeString()}</option>
-          ))}
-        </select>
+        <button onClick={handleToggleOverlay}>Show Times</button>
+        {showOverlay && (
+          <div className="overlay">
+            <button onClick={handleToggleOverlay}>X</button>
+            <ul>
+              {timeline.map((mark, index) => (
+                <li key={index}>{mark.toLocaleTimeString()}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
+      <div>
+        <button onClick={handleAdd}>Add</button>
+        <button onClick={handleSubtract}>Subtract</button>
+        <button onClick={handleReset}>Reset</button>
+      </div>
+      <style jsx>{`
+        .overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .overlay button {
+          margin-bottom: 10px;
+        }
+      `}</style>
     </div>
   );
 };
 
 export default Tracker;
+
 
