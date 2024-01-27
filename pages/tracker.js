@@ -58,8 +58,8 @@ const Tracker = () => {
           {hourCounters.map((counter, hour) => (
             <div key={hour} style={{ margin: "0 10px" }} onMouseEnter={() => handleToggleBubble(hour)} onMouseLeave={() => handleToggleBubble(hour)}>
               <p>{hour % 12 || 12} {hour < 12 ? "AM" : "PM"}</p>
-              <p style={{ fontSize: "20px" }}>{counter}</p>
-              {hoveredHour === hour && (
+              <p style={{ fontSize: "20px" }}>{counter !== 0 ? counter : ""}</p>
+              {hoveredHour === hour && counter !== 0 && (
                 <div className="bubble">
                   <ul>
                     {timeline
