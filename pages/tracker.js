@@ -40,7 +40,7 @@ const Tracker = () => {
   };
 
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
       <h1>Tracker Page</h1>
       <div>
         <p>Count: {count}</p>
@@ -48,7 +48,7 @@ const Tracker = () => {
         <button onClick={handleSubtract}>Subtract</button>
         <button onClick={handleReset}>Reset</button>
       </div>
-      <div style={{ textAlign: "center" }}>
+      <div>
         <h2>Hourly Counters</h2>
         <div style={{ display: "flex", justifyContent: "center" }}>
           {hourCounters.map((counter, hour) => (
@@ -65,11 +65,11 @@ const Tracker = () => {
       </div>
       <div>
         <h2>Timeline</h2>
-        <ul>
+        <select>
           {timeline.map((mark, index) => (
-            <li key={index}>{mark.toLocaleTimeString()}</li>
+            <option key={index}>{mark.toLocaleTimeString()}</option>
           ))}
-        </ul>
+        </select>
       </div>
     </div>
   );
