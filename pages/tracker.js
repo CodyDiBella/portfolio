@@ -114,7 +114,7 @@ const Tracker = () => {
         .bottom-centerL {
           position: absolute;
           bottom: 0;
-          left: 50;
+          left: 500;
         }
 
         .bottom-centerR {
