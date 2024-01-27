@@ -67,33 +67,26 @@ const Tracker = () => {
         <h2>Shift Total</h2>
         <p>{shiftTotal}</p>
       </div>
-      <div>
-        <h2>Hourly Total</h2>
-        <p>{getCurrentHourlyTotal()}</p>
-      </div>
       <div style={{ marginTop: "20px" }}>
-        <button className="action-btn top-left" onClick={handleReset}>Reset</button>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <button className="action-btn bottom-center" onClick={handleSubtract}>Subtract</button>
           <button className="action-btn bottom-center" onClick={handleAdd}>Add</button>
         </div>
       </div>
-      <div>
-        <h2>Timeline</h2>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button className="action-btn bottom-right" onClick={handleToggleOverlay}>Show Times</button>
-        </div>
-        {showOverlay && (
-          <div className="overlay">
-            <button onClick={handleToggleOverlay}>X</button>
-            <ul>
-              {timeline.map((mark, index) => (
-                <li key={index}>{mark.toLocaleTimeString()}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+      <div style={{ marginTop: "20px" }}>
+        <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
+        <button className="action-btn bottom-right" onClick={handleToggleOverlay}>Show Times</button>
       </div>
+      {showOverlay && (
+        <div className="overlay">
+          <button onClick={handleToggleOverlay}>X</button>
+          <ul>
+            {timeline.map((mark, index) => (
+              <li key={index}>{mark.toLocaleTimeString()}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <style jsx>{`
         .overlay {
           position: fixed;
@@ -118,14 +111,12 @@ const Tracker = () => {
           font-size: 16px;
         }
 
-        .top-left {
-          position: absolute;
-          top: 0;
-          left: 0;
-        }
-
         .bottom-center {
           margin: 0 5px;
+        }
+
+        .bottom-left {
+          margin-right: auto;
         }
 
         .bottom-right {
