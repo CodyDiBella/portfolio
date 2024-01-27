@@ -54,12 +54,13 @@ const Tracker = () => {
   return (
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>New Ticket Tracking Buddy</h1>
-      <Image
-        src={trackerImg}
-        alt="/"
-        width={300}
-        height={200}
-      />
+       <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Image
+          src={trackerImg}
+          alt="Tracker Image"
+          width={150}
+        />
+      </div>
       <div>
         <h2>Hourly Counters</h2>
         <div style={{ display: "flex", justifyContent: "center", paddingTop: "30px" }}>
