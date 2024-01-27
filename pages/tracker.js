@@ -68,13 +68,15 @@ const Tracker = () => {
         <p>{shiftTotal}</p>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <button className="action-btn bottom-center" onClick={handleSubtract}>Subtract</button>
-          <button className="action-btn bottom-center" onClick={handleAdd}>Add</button>
+        <div style={{ position: "absolute", bottom: 0, left: 0 }}>
+          <button className="action-btn" onClick={handleSubtract}>-</button>
+        </div>
+        <div style={{ position: "absolute", bottom: 0, right: 0 }}>
+          <button className="action-btn" onClick={handleAdd}>+</button>
         </div>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
+        <button className="action-btn bottom-center" onClick={handleReset}>Reset</button>
         <button className="action-btn bottom-right" onClick={handleToggleOverlay}>Show Times</button>
       </div>
       {showOverlay && (
@@ -116,16 +118,10 @@ const Tracker = () => {
           bottom: 0;
         }
 
-        .bottom-left {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-        }
-
         .bottom-right {
           position: absolute;
           bottom: 0;
-          right: 0
+          right: 0;
         }
       `}</style>
     </div>
