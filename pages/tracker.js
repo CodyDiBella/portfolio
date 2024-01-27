@@ -50,7 +50,7 @@ const Tracker = () => {
   };
 
   return (
-    <div style={{ textAlign: "center", paddingTop: "20px" }}>
+    <div style={{ textAlign: "center", paddingTop: "60px" }}>
       <h1>Tracker Page</h1>
       <div>
         <h2>Hourly Counters</h2>
@@ -72,8 +72,8 @@ const Tracker = () => {
         <p>{getCurrentHourlyTotal()}</p>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <button className="action-btn top-left" onClick={handleReset}>Reset</button>
-        <button className="action-btn top-right" onClick={handleSubtract}>Subtract</button>
+        <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
+        <button className="action-btn bottom-right" onClick={handleSubtract}>Subtract</button>
         <button className="action-btn bottom-middle" onClick={handleAdd}>Add</button>
       </div>
       <div>
@@ -114,15 +114,15 @@ const Tracker = () => {
           font-size: 16px;
         }
 
-        .top-left {
+        .bottom-left {
           position: absolute;
-          top: 0;
+          bottom: 0;
           left: 0;
         }
 
-        .top-right {
+        .bottom-right {
           position: absolute;
-          top: 0;
+          bottom: 0;
           right: 0;
         }
 
