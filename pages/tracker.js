@@ -5,7 +5,7 @@ const Tracker = () => {
   const [timeline, setTimeline] = useState([]);
   const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
   const [shiftTotal, setShiftTotal] = useState(0);
-  const [showOverlay, setShowOverlay] = useState(false);
+  const [hoveredHour, setHoveredHour] = useState(null);
 
   const handleAdd = () => {
     const now = new Date();
@@ -40,8 +40,8 @@ const Tracker = () => {
     setHourCounters(Array(24).fill(0));
   };
 
-  const handleToggleOverlay = () => {
-    setShowOverlay(!showOverlay);
+  const handleToggleBubble = (hour) => {
+    setHoveredHour(hoveredHour === hour ? null : hour);
   };
 
   const getCurrentHourlyTotal = () => {
@@ -56,9 +56,20 @@ const Tracker = () => {
         <h2>Hourly Counters</h2>
         <div style={{ display: "flex", justifyContent: "center", paddingTop: "30px" }}>
           {hourCounters.map((counter, hour) => (
-            <div key={hour} style={{ margin: "0 10px" }}>
+            <div key={hour} style={{ margin: "0 10px" }} onMouseEnter={() => handleToggleBubble(hour)} onMouseLeave={() => handleToggleBubble(hour)}>
               <p>{hour % 12 || 12} {hour < 12 ? "AM" : "PM"}</p>
               <p style={{ fontSize: "20px" }}>{counter}</p>
+              {hoveredHour === hour && (
+                <div className="bubble">
+                  <ul>
+                    {timeline
+                      .filter((mark) => mark.getHours() === hour)
+                      .map((mark, index) => (
+                        <li key={index}>{mark.toLocaleTimeString()}</li>
+                      ))}
+                  </ul>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -79,34 +90,23 @@ const Tracker = () => {
       </div>
       <div style={{ marginTop: "20px" }}>
         <button className="action-btn bottom-left" onClick={handleReset}>Reset</button>
-        <button className="action-btn bottom-right" onClick={handleToggleOverlay}>Show Times</button>
       </div>
-      {showOverlay && (
-        <div className="overlay">
-          <button onClick={handleToggleOverlay}>X</button>
-          <ul>
-            {timeline.map((mark, index) => (
-              <li key={index}>{mark.toLocaleTimeString()}</li>
-            ))}
-          </ul>
-        </div>
-      )}
       <style jsx>{`
-        .overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.5);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+        .bubble {
+          position: absolute;
+          background-color: white;
+          border: 1px solid #ccc;
+          padding: 10px;
+          z-index: 1;
         }
 
-        .overlay button {
-          margin-bottom: 10px;
+        .bubble ul {
+          list-style: none;
+          padding: 0;
+        }
+
+        .bubble li {
+          margin: 5px;
         }
 
         .action-btn {
@@ -119,12 +119,6 @@ const Tracker = () => {
           position: absolute;
           bottom: 0;
           left: 0;
-        }
-
-        .bottom-right {
-          position: absolute;
-          bottom: 0;
-          right: 0;
         }
       `}</style>
     </div>
