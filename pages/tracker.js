@@ -68,7 +68,7 @@ const Tracker = () => {
         <p>{shiftTotal}</p>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <div style={{ position: "absolute", bottom: 0, left: 0 }}>
+        <div style={{ position: "absolute", bottom: 0}}>
           <button className="action-btn" onClick={handleSubtract}>-</button>
           <button className="action-btn" onClick={handleAdd}>+</button>
         </div>
