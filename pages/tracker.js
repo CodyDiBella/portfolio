@@ -142,3 +142,5 @@ const Tracker = () => {
     </div>
   );
 };
+
+export default Tracker;
