@@ -62,8 +62,7 @@ const Contact = () => {
               <div>
                 <img
                   className="rounded-xl hover:scale-110 ease-in duration-200"
-                  src="https://www.flaticon.com/free-icon/hello-world_8844255"
-                  alt="/"
+                  src="/assets/CD.png" alt="/" width="50" height="5"
                 />
               </div>
               <div>
