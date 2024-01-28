@@ -2,12 +2,18 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
 
+// Import your sound files
+import clickSound from "../public/assets/games/click.mp3";
+
 const Tracker = () => {
   const [count, setCount] = useState(0);
   const [timeline, setTimeline] = useState([]);
   const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
   const [shiftTotal, setShiftTotal] = useState(0);
   const [hoveredHour, setHoveredHour] = useState(null);
+
+  // Create audio elements
+  const clickSoundRef = new Audio(clickSound);
 
   const handleAdd = () => {
     const now = new Date();
@@ -19,6 +25,8 @@ const Tracker = () => {
       updatedCounters[now.getHours()] += 1;
       return updatedCounters;
     });
+    // Play sound on button click
+    clickSoundRef.play();
   };
 
   const handleSubtract = () => {
@@ -32,6 +40,8 @@ const Tracker = () => {
         updatedCounters[lastMark.getHours()] -= 1;
         return updatedCounters;
       });
+      // Play sound on button click
+      clickSoundRef.play();
     }
   };
 
@@ -40,6 +50,8 @@ const Tracker = () => {
     setShiftTotal(0);
     setTimeline([]);
     setHourCounters(Array(24).fill(0));
+    // Play sound on button click
+    clickSoundRef.play();
   };
 
   const handleToggleBubble = (hour) => {
@@ -55,11 +67,7 @@ const Tracker = () => {
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>New Ticket Tracking Buddy</h1>
       <div style={{ display: "flex", padding: "30px", justifyContent: "center", alignItems: "center" }}>
-        <Image
-          src={trackerImg}
-          alt="Tracker Image"
-          width={200}
-        />
+        <Image src={trackerImg} alt="Tracker Image" width={200} />
       </div>
       <div>
         <h2>Hourly Counters</h2>
