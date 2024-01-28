@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
+import clickPlus from "../public/assets/games/click.mp3";
 
 const Tracker = () => {
   const [count, setCount] = useState(0);
@@ -8,6 +9,11 @@ const Tracker = () => {
   const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
   const [shiftTotal, setShiftTotal] = useState(0);
   const [hoveredHour, setHoveredHour] = useState(null);
+
+  const playClickSound = () => {
+    const audio = new Audio(clickPlus);
+    audio.play();
+  };
 
   const handleAdd = () => {
     const now = new Date();
@@ -19,6 +25,7 @@ const Tracker = () => {
       updatedCounters[now.getHours()] += 1;
       return updatedCounters;
     });
+    playClickSound();
   };
 
   const handleSubtract = () => {
@@ -32,6 +39,7 @@ const Tracker = () => {
         updatedCounters[lastMark.getHours()] -= 1;
         return updatedCounters;
       });
+      playClickSound();
     }
   };
 
@@ -40,6 +48,7 @@ const Tracker = () => {
     setShiftTotal(0);
     setTimeline([]);
     setHourCounters(Array(24).fill(0));
+    playClickSound();
   };
 
   const handleToggleBubble = (hour) => {
