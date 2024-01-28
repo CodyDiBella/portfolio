@@ -102,8 +102,8 @@ const handleAdd = () => {
       </div>
       <style jsx>{`
         .larger-btn {
-          padding: 40px; /* Adjust the padding to make the button larger */
-          font-size: 40px; /* Adjust the font size to make the button larger */
+          padding: 60px;
+          font-size: 200px;
         }
     
         .bubble {
