@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
-import clickPlusPath from "../public/assets/games/click.mp3";
+import clickPlus from "../public/assets/games/click.mp3";
 
 const Tracker = () => {
   const [count, setCount] = useState(0);
@@ -9,13 +9,6 @@ const Tracker = () => {
   const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
   const [shiftTotal, setShiftTotal] = useState(0);
   const [hoveredHour, setHoveredHour] = useState(null);
-
-  const clickPlus = new Audio(clickPlusPath);
-
-  const playClickSound = () => {
-    clickPlus.currentTime = 0;
-    clickPlus.play();
-  };
 
   const handleAdd = () => {
     const now = new Date();
@@ -27,7 +20,6 @@ const Tracker = () => {
       updatedCounters[now.getHours()] += 1;
       return updatedCounters;
     });
-    playClickSound();
   };
 
   const handleSubtract = () => {
@@ -41,7 +33,6 @@ const Tracker = () => {
         updatedCounters[lastMark.getHours()] -= 1;
         return updatedCounters;
       });
-      playClickSound();
     }
   };
 
@@ -50,7 +41,6 @@ const Tracker = () => {
     setShiftTotal(0);
     setTimeline([]);
     setHourCounters(Array(24).fill(0));
-    playClickSound();
   };
 
   const handleToggleBubble = (hour) => {
@@ -66,7 +56,11 @@ const Tracker = () => {
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>New Ticket Tracking Buddy</h1>
       <div style={{ display: "flex", padding: "30px", justifyContent: "center", alignItems: "center" }}>
-        <Image src={trackerImg} alt="Tracker Image" width={200} />
+        <Image
+          src={trackerImg}
+          alt="Tracker Image"
+          width={200}
+        />
       </div>
       <div>
         <h2>Hourly Counters</h2>
@@ -101,17 +95,11 @@ const Tracker = () => {
         </div>
       </div>
       <div style={{ marginTop: "20px", fontSize: "60px", textAlign: "center" }}>
-        <button className="action-btn" onClick={handleAdd}>
-          +
-        </button>
+        <button className="action-btn" onClick={handleAdd}>+</button>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <button className="action-btn bottom-left" onClick={handleSubtract}>
-          -
-        </button>
-        <button className="action-btn bottom-right" onClick={handleReset}>
-          Reset
-        </button>
+        <button className="action-btn bottom-left" onClick={handleSubtract}>-</button>
+        <button className="action-btn bottom-right" onClick={handleReset}>Reset</button>
       </div>
       <style jsx>{`
         .bubble {
@@ -154,6 +142,3 @@ const Tracker = () => {
     </div>
   );
 };
-
-export default Tracker;
-
