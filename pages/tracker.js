@@ -53,7 +53,7 @@ const handleAdd = () => {
 
   return (
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
-      <h1>New Ticket Tracking Buddy</h1>
+      <h1>Ticket Tracking Buddy</h1>
       <div style={{ display: "flex", padding: "30px", justifyContent: "center", alignItems: "center" }}>
         <Image
           src={trackerImg}
