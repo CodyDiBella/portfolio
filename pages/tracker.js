@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
-const clickPlus = new Audio('./assets/games/click.mp3');
+const clickPlus = new Audio('../public/assets/games/click.mp3');
 
 const Tracker = () => {
   const [count, setCount] = useState(0);
