@@ -93,7 +93,7 @@ const handleAdd = () => {
           <p style={{ fontSize: "80px" }}>{getCurrentHourlyTotal()}</p>
         </div>
       </div>
-      <div style={{ padding: "80px", marginTop: "20px", fontSize: "60px", textAlign: "center" }}>
+      <div style={{ padding: "80px", margin: "70px", fontSize: "230px", textAlign: "center" }}>
         <button className="action-btn" onClick={handleAdd}>+</button>
       </div>
       <div style={{ marginTop: "20px" }}>
