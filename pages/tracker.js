@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
-const clickPlus = new Audio("/assets/games/click.mp3");
 
 const Tracker = () => {
   const [count, setCount] = useState(0);
@@ -12,8 +11,6 @@ const Tracker = () => {
 
 const handleAdd = () => {
     const now = new Date();
-    clickPlus.currentTime = 0;
-    clickPlus.play();
     setCount(count + 1);
     setShiftTotal(shiftTotal + 1);
     setTimeline([...timeline, now]);
