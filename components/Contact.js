@@ -62,7 +62,7 @@ const Contact = () => {
               <div>
                 <img
                   className="rounded-xl hover:scale-110 ease-in duration-200"
-                  src="https://ponderosa-scusd-ca.schoolloop.com/pf4/cms2/://cdn.schoolloop.com/uimgcdn/aHR0cDovL3BvbmRlcm9zYS1zY3VzZC1jYS5zY2hvb2xsb29wLmNvbS91aW1nL2ZpbGUvMTQ3MDExOTk0NTI2Ni8zNjg1MDI1MjA1NjA0ODI3ODg2LnBuZz8xNDcyNDAxNjIzMDM3"
+                  src="https://i.stack.imgur.com/NjEq9.png"
                   alt="/"
                 />
               </div>
