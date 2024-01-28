@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
-import clickPlus from "../public/assets/games/click.mp3";
+const clickPlus = new Audio("/assets/games/click.mp3");
 
 const Tracker = () => {
   const [count, setCount] = useState(0);
@@ -10,7 +10,7 @@ const Tracker = () => {
   const [shiftTotal, setShiftTotal] = useState(0);
   const [hoveredHour, setHoveredHour] = useState(null);
 
-  const handleAdd = () => {
+const handleAdd = () => {
     const now = new Date();
     clickPlus.currentTime = 0;
     clickPlus.play();
