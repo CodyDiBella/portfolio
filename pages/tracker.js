@@ -93,14 +93,19 @@ const handleAdd = () => {
           <p style={{ fontSize: "80px" }}>{getCurrentHourlyTotal()}</p>
         </div>
       </div>
-      <div style={{ padding: "80px", marginTop: "30px", fontSize: "70px", textAlign: "center" }}>
-        <button className="action-btn" onClick={handleAdd}>+</button>
+      <div style={{ padding: "80px", marginTop: "30px", textAlign: "center" }}>
+        <button className="action-btn larger-btn" onClick={handleAdd}>+</button>
       </div>
       <div style={{ marginTop: "20px" }}>
         <button className="action-btn bottom-left" onClick={handleSubtract}>-</button>
         <button className="action-btn bottom-right" onClick={handleReset}>Reset</button>
       </div>
       <style jsx>{`
+        .larger-btn {
+          padding: 40px; /* Adjust the padding to make the button larger */
+          font-size: 40px; /* Adjust the font size to make the button larger */
+        }
+    
         .bubble {
           position: absolute;
           background-color: lightgray;
