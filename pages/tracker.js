@@ -3,63 +3,66 @@ import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
 
 const Tracker = () => {
-  const [count, setCount] = useState(0);
-  const [timeline, setTimeline] = useState([]);
-  const [hourCounters, setHourCounters] = useState(Array(24).fill(0));
-  const [shiftTotal, setShiftTotal] = useState(0);
-  const [hoveredHour, setHoveredHour] = useState(null);
+  const initialState = {
+    count: 0,
+    timeline: [],
+    hourCounters: Array(24).fill(0),
+    shiftTotal: 0,
+  };
+
+  const [state, setState] = useState(initialState);
+  const { count, timeline, hourCounters, shiftTotal } = state;
 
   useEffect(() => {
+    // Retrieve data from localStorage on component mount
     const storedData = localStorage.getItem("trackerData");
     if (storedData) {
-      const { count, timeline, hourCounters, shiftTotal } = JSON.parse(storedData);
-      setCount(count);
-      setTimeline(timeline);
-      setHourCounters(hourCounters);
-      setShiftTotal(shiftTotal);
+      setState(JSON.parse(storedData));
     }
   }, []);
 
   useEffect(() => {
-    const dataToStore = JSON.stringify({ count, timeline, hourCounters, shiftTotal });
-    localStorage.setItem("trackerData", dataToStore);
-  }, [count, timeline, hourCounters, shiftTotal]);
+    // Save data to localStorage whenever it changes
+    localStorage.setItem("trackerData", JSON.stringify(state));
+  }, [state]);
 
   const handleAdd = () => {
     const now = new Date();
-    setCount(count + 1);
-    setShiftTotal(shiftTotal + 1);
-    setTimeline([...timeline, now]);
-    setHourCounters((prevCounters) => {
-      const updatedCounters = [...prevCounters];
-      updatedCounters[now.getHours()] += 1;
-      return updatedCounters;
-    });
+    setState((prevState) => ({
+      ...prevState,
+      count: prevState.count + 1,
+      shiftTotal: prevState.shiftTotal + 1,
+      timeline: [...prevState.timeline, now],
+      hourCounters: prevState.hourCounters.map((count, hour) =>
+        hour === now.getHours() ? count + 1 : count
+      ),
+    }));
   };
 
   const handleSubtract = () => {
     if (count > 0) {
       const lastMark = timeline[timeline.length - 1];
-      setCount(count - 1);
-      setShiftTotal(shiftTotal - 1);
-      setTimeline(timeline.slice(0, -1));
-      setHourCounters((prevCounters) => {
-        const updatedCounters = [...prevCounters];
-        updatedCounters[lastMark.getHours()] -= 1;
-        return updatedCounters;
-      });
+      setState((prevState) => ({
+        ...prevState,
+        count: prevState.count - 1,
+        shiftTotal: prevState.shiftTotal - 1,
+        timeline: prevState.timeline.slice(0, -1),
+        hourCounters: prevState.hourCounters.map((count, hour) =>
+          hour === lastMark.getHours() ? count - 1 : count
+        ),
+      }));
     }
   };
 
   const handleReset = () => {
-    setCount(0);
-    setShiftTotal(0);
-    setTimeline([]);
-    setHourCounters(Array(24).fill(0));
+    setState(initialState);
   };
 
   const handleToggleBubble = (hour) => {
-    setHoveredHour(hoveredHour === hour ? null : hour);
+    setState((prevState) => ({
+      ...prevState,
+      hoveredHour: prevState.hoveredHour === hour ? null : hour,
+    }));
   };
 
   const getCurrentHourlyTotal = () => {
