@@ -40,23 +40,22 @@ const Tracker = () => {
     }));
   };
 
-const handleSubtract = () => {
-  if (count > 0 && timeline.length > 0) {
-    const lastMark = timeline[timeline.length - 1];
-    if (lastMark instanceof Date && !isNaN(lastMark)) {
-      setState((prevState) => ({
-        ...prevState,
-        count: prevState.count - 1,
-        shiftTotal: prevState.shiftTotal - 1,
-        timeline: prevState.timeline.slice(0, -1),
-        hourCounters: prevState.hourCounters.map((count, hour) =>
-          hour === lastMark.getHours() ? count - 1 : count
-        ),
-      }));
+  const handleSubtract = () => {
+    if (count > 0 && timeline.length > 0) {
+      const lastMark = timeline[timeline.length - 1];
+      if (lastMark instanceof Date && !isNaN(lastMark)) {
+        setState((prevState) => ({
+          ...prevState,
+          count: prevState.count - 1,
+          shiftTotal: prevState.shiftTotal - 1,
+          timeline: prevState.timeline.slice(0, -1),
+          hourCounters: prevState.hourCounters.map((count, hour) =>
+            hour === lastMark.getHours() ? count - 1 : count
+          ),
+        }));
+      }
     }
-  }
-};
-
+  };
 
   const handleReset = () => {
     setState(initialState);
@@ -95,7 +94,7 @@ const handleSubtract = () => {
                 <div className="bubble">
                   <ul>
                     {timeline
-                      .filter((mark) => mark.getHours() === hour)
+                      .filter((mark) => mark instanceof Date && !isNaN(mark) && mark.getHours() === hour)
                       .map((mark, index) => (
                         <li key={index}>{mark.toLocaleTimeString()}</li>
                       ))}
