@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import trackerImg from "../public/assets/games/trackerImg.png";
-import { useLocalStorage } from "react-use";
 
 const Tracker = () => {
   const [count, setCount] = useState(0);
@@ -10,23 +9,7 @@ const Tracker = () => {
   const [shiftTotal, setShiftTotal] = useState(0);
   const [hoveredHour, setHoveredHour] = useState(null);
 
-  // Use useLocalStorage to persist state
-  const [persistedState, setPersistedState] = useLocalStorage("trackerData", {
-    count: 0,
-    timeline: [],
-    hourCounters: Array(24).fill(0),
-    shiftTotal: 0,
-  });
-
-  useEffect(() => {
-    // Set initial state from localStorage
-    setCount(persistedState.count);
-    setTimeline(persistedState.timeline);
-    setHourCounters(persistedState.hourCounters);
-    setShiftTotal(persistedState.shiftTotal);
-  }, [persistedState]);
-
-  const handleAdd = () => {
+const handleAdd = () => {
     const now = new Date();
     setCount(count + 1);
     setShiftTotal(shiftTotal + 1);
@@ -110,7 +93,7 @@ const Tracker = () => {
           <p style={{ fontSize: "50px" }}>{getCurrentHourlyTotal()}</p>
         </div>
       </div>
-      <div style={{ padding: "20px", marginTop: "30px", textAlign: "center" }}>
+      <div style={{ padding: "10px", marginTop: "10px", textAlign: "center" }}>
         <button className="action-btn larger-btn" onClick={handleAdd}>+</button>
       </div>
       <div style={{ marginTop: "10px" }}>
@@ -165,4 +148,3 @@ const Tracker = () => {
 };
 
 export default Tracker;
-
