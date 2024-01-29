@@ -8,7 +8,7 @@ const Tracker = () => {
     timeline: [],
     hourCounters: Array(24).fill(0),
     shiftTotal: 0,
-    hoveredHour: null, // Add hoveredHour to the initial state
+    hoveredHour: null,
   };
 
   const [state, setState] = useState(initialState);
@@ -33,7 +33,7 @@ const Tracker = () => {
       ...prevState,
       count: prevState.count + 1,
       shiftTotal: prevState.shiftTotal + 1,
-      timeline: [...prevState.timeline, now],
+      timeline: [...prevState.timeline, { date: now, count: prevState.count + 1 }],
       hourCounters: prevState.hourCounters.map((count, hour) =>
         hour === now.getHours() ? count + 1 : count
       ),
@@ -43,14 +43,14 @@ const Tracker = () => {
   const handleSubtract = () => {
     if (count > 0 && timeline.length > 0) {
       const lastMark = timeline[timeline.length - 1];
-      if (lastMark instanceof Date && !isNaN(lastMark)) {
+      if (lastMark.date instanceof Date && !isNaN(lastMark.date)) {
         setState((prevState) => ({
           ...prevState,
           count: prevState.count - 1,
           shiftTotal: prevState.shiftTotal - 1,
           timeline: prevState.timeline.slice(0, -1),
           hourCounters: prevState.hourCounters.map((count, hour) =>
-            hour === lastMark.getHours() ? count - 1 : count
+            hour === lastMark.date.getHours() ? count - 1 : count
           ),
         }));
       }
@@ -77,26 +77,29 @@ const Tracker = () => {
     <div style={{ textAlign: "center", paddingTop: "80px" }}>
       <h1>Ticket Tracking Buddy</h1>
       <div style={{ display: "flex", padding: "30px", justifyContent: "center", alignItems: "center" }}>
-        <Image
-          src={trackerImg}
-          alt="Tracker Image"
-          width={100}
-        />
+        <Image src={trackerImg} alt="Tracker Image" width={100} />
       </div>
       <div>
         <h2>Hourly Counters</h2>
         <div style={{ display: "flex", justifyContent: "center", paddingTop: "20px" }}>
           {hourCounters.map((counter, hour) => (
-            <div key={hour} style={{ margin: "0 10px" }} onMouseEnter={() => handleToggleBubble(hour)} onMouseLeave={() => handleToggleBubble(hour)}>
-              <p>{hour % 12 || 12} {hour < 12 ? "AM" : "PM"}</p>
+            <div
+              key={hour}
+              style={{ margin: "0 10px" }}
+              onMouseEnter={() => handleToggleBubble(hour)}
+              onMouseLeave={() => handleToggleBubble(hour)}
+            >
+              <p>
+                {hour % 12 || 12} {hour < 12 ? "AM" : "PM"}
+              </p>
               <p style={{ fontSize: "20px" }}>{counter !== 0 ? counter : ""}</p>
               {hoveredHour === hour && counter !== 0 && (
                 <div className="bubble">
                   <ul>
                     {timeline
-                      .filter((mark) => mark instanceof Date && !isNaN(mark) && mark.getHours() === hour)
+                      .filter((mark) => mark.date.getHours() === hour)
                       .map((mark, index) => (
-                        <li key={index}>{mark.toLocaleTimeString()}</li>
+                        <li key={index}>{mark.date.toLocaleTimeString()}</li>
                       ))}
                   </ul>
                 </div>
@@ -105,7 +108,16 @@ const Tracker = () => {
           ))}
         </div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center", fontSize: "24px", paddingTop: "30px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          textAlign: "center",
+          fontSize: "24px",
+          paddingTop: "30px",
+        }}
+      >
         <div>
           <h2>Shift Total</h2>
           <p style={{ fontSize: "40px" }}>{shiftTotal}</p>
@@ -116,18 +128,24 @@ const Tracker = () => {
         </div>
       </div>
       <div style={{ padding: "10px", marginTop: "10px", textAlign: "center" }}>
-        <button className="action-btn larger-btn" onClick={handleAdd}>+</button>
+        <button className="action-btn larger-btn" onClick={handleAdd}>
+          +
+        </button>
       </div>
       <div style={{ marginTop: "10px" }}>
-        <button className="action-btn bottom-left" onClick={handleSubtract}>-</button>
-        <button className="action-btn bottom-right" onClick={handleReset}>Reset</button>
+        <button className="action-btn bottom-left" onClick={handleSubtract}>
+          -
+        </button>
+        <button className="action-btn bottom-right" onClick={handleReset}>
+          Reset
+        </button>
       </div>
       <style jsx>{`
         .larger-btn {
           padding: 60px;
           font-size: 200px;
         }
-    
+
         .bubble {
           position: absolute;
           background-color: lightgray;
