@@ -5,7 +5,7 @@ import trackerImg from "../public/assets/games/trackerImg.png";
 const Tracker = () => {
   const initialState = {
     count: 0,
-    timeline: [],
+    timeline: [], // Array of { timestamp: number, count: number }
     hourCounters: Array(24).fill(0),
     shiftTotal: 0,
     hoveredHour: null,
@@ -28,14 +28,14 @@ const Tracker = () => {
   }, [state]);
 
   const handleAdd = () => {
-    const now = new Date();
+    const now = new Date().getTime(); // Store timestamp
     setState((prevState) => ({
       ...prevState,
       count: prevState.count + 1,
       shiftTotal: prevState.shiftTotal + 1,
-      timeline: [...prevState.timeline, { date: now, count: prevState.count + 1 }],
+      timeline: [...prevState.timeline, { timestamp: now, count: prevState.count + 1 }],
       hourCounters: prevState.hourCounters.map((count, hour) =>
-        hour === now.getHours() ? count + 1 : count
+        hour === new Date(now).getHours() ? count + 1 : count
       ),
     }));
   };
@@ -43,17 +43,19 @@ const Tracker = () => {
   const handleSubtract = () => {
     if (count > 0 && timeline.length > 0) {
       const lastMark = timeline[timeline.length - 1];
-      if (lastMark.date instanceof Date && !isNaN(lastMark.date)) {
-        setState((prevState) => ({
+      setState((prevState) => {
+        const updatedTimeline = prevState.timeline.slice(0, -1);
+        const updatedHourCounters = prevState.hourCounters.map((count, hour) =>
+          hour === new Date(lastMark.timestamp).getHours() ? count - 1 : count
+        );
+        return {
           ...prevState,
           count: prevState.count - 1,
           shiftTotal: prevState.shiftTotal - 1,
-          timeline: prevState.timeline.slice(0, -1),
-          hourCounters: prevState.hourCounters.map((count, hour) =>
-            hour === lastMark.date.getHours() ? count - 1 : count
-          ),
-        }));
-      }
+          timeline: updatedTimeline,
+          hourCounters: updatedHourCounters,
+        };
+      });
     }
   };
 
@@ -97,9 +99,9 @@ const Tracker = () => {
                 <div className="bubble">
                   <ul>
                     {timeline
-                      .filter((mark) => mark.date.getHours() === hour)
+                      .filter((mark) => new Date(mark.timestamp).getHours() === hour)
                       .map((mark, index) => (
-                        <li key={index}>{mark.date.toLocaleTimeString()}</li>
+                        <li key={index}>{new Date(mark.timestamp).toLocaleTimeString()}</li>
                       ))}
                   </ul>
                 </div>
