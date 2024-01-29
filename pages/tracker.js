@@ -40,9 +40,10 @@ const Tracker = () => {
     }));
   };
 
-  const handleSubtract = () => {
-    if (count > 0) {
-      const lastMark = timeline[timeline.length - 1];
+const handleSubtract = () => {
+  if (count > 0 && timeline.length > 0) {
+    const lastMark = timeline[timeline.length - 1];
+    if (lastMark instanceof Date && !isNaN(lastMark)) {
       setState((prevState) => ({
         ...prevState,
         count: prevState.count - 1,
@@ -53,7 +54,9 @@ const Tracker = () => {
         ),
       }));
     }
-  };
+  }
+};
+
 
   const handleReset = () => {
     setState(initialState);
