@@ -8,10 +8,11 @@ const Tracker = () => {
     timeline: [],
     hourCounters: Array(24).fill(0),
     shiftTotal: 0,
+    hoveredHour: null, // Add hoveredHour to the initial state
   };
 
   const [state, setState] = useState(initialState);
-  const { count, timeline, hourCounters, shiftTotal } = state;
+  const { count, timeline, hourCounters, shiftTotal, hoveredHour } = state;
 
   useEffect(() => {
     // Retrieve data from localStorage on component mount
@@ -59,7 +60,10 @@ const Tracker = () => {
   };
 
   const handleToggleBubble = (hour) => {
-    setHoveredHour(hoveredHour === hour ? null : hour);
+    setState((prevState) => ({
+      ...prevState,
+      hoveredHour: prevState.hoveredHour === hour ? null : hour,
+    }));
   };
 
   const getCurrentHourlyTotal = () => {
