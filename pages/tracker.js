@@ -26,16 +26,14 @@ const Tracker = () => {
   }, [state]);
 
   const getCounterColor = (counter) => {
-    if (counter >= 1 && counter <= 3) {
+    if (counter >= 1 && counter <= 4) {
       return "red";
-    } else if (counter >= 4 && counter <= 6) {
+    } else if (counter >= 5 && counter <= 8) {
       return "orange";
-    } else if (counter >= 7 && counter <= 8) {
-      return "yellow";
     } else if (counter >= 9 && counter <= 10) {
       return "green";
     } else if (counter >= 11) {
-      return "purple";
+      return "blue";
     }
     return "black";
   };
