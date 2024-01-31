@@ -5,7 +5,7 @@ import trackerImg from "../public/assets/games/trackerImg.png";
 const Tracker = () => {
   const initialState = {
     count: 0,
-    timeline: [], // Array of { timestamp: number, count: number }
+    timeline: [],
     hourCounters: Array(24).fill(0),
     shiftTotal: 0,
     hoveredHour: null,
@@ -15,7 +15,6 @@ const Tracker = () => {
   const { count, timeline, hourCounters, shiftTotal, hoveredHour } = state;
 
   useEffect(() => {
-    // Retrieve data from localStorage on component mount
     const storedData = localStorage.getItem("trackerData");
     if (storedData) {
       setState(JSON.parse(storedData));
@@ -23,12 +22,26 @@ const Tracker = () => {
   }, []);
 
   useEffect(() => {
-    // Save data to localStorage whenever it changes
     localStorage.setItem("trackerData", JSON.stringify(state));
   }, [state]);
 
+  const getCounterColor = (counter) => {
+    if (counter >= 1 && counter <= 3) {
+      return "red";
+    } else if (counter >= 4 && counter <= 6) {
+      return "orange";
+    } else if (counter >= 7 && counter <= 8) {
+      return "yellow";
+    } else if (counter >= 9 && counter <= 10) {
+      return "green";
+    } else if (counter >= 11) {
+      return "purple";
+    }
+    return "black";
+  };
+
   const handleAdd = () => {
-    const now = new Date().getTime(); // Store timestamp
+    const now = new Date().getTime();
     setState((prevState) => ({
       ...prevState,
       count: prevState.count + 1,
@@ -87,7 +100,10 @@ const Tracker = () => {
           {hourCounters.map((counter, hour) => (
             <div
               key={hour}
-              style={{ margin: "0 10px" }}
+              style={{
+                margin: "0 10px",
+                color: getCounterColor(counter),
+              }}
               onMouseEnter={() => handleToggleBubble(hour)}
               onMouseLeave={() => handleToggleBubble(hour)}
             >
