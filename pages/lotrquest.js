@@ -1,359 +1,160 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from 'react';
 
-const milestones = [
-  "The Shire",
-  "The Old Forest",
-  "Bree",
-  "Rivendell",
-  "Mines of Moria",
-  "Lothlórien",
-  "Anduin River",
-  "Amon Hen",
-  "Dead Marshes",
-  "Minas Morgul",
-  "Mount Doom",
-  "The Grey Havens",
-];
+const GRID_SIZE = 5;
+const MAX_ENERGY = 3;
+const MAX_HEALTH = 3;
 
-const daysPerStage = 7;
-const totalDays = milestones.length * daysPerStage;
+const generateGrid = () => {
+  const grid = [];
+  for (let y = 0; y < GRID_SIZE; y++) {
+    const row = [];
+    for (let x = 0; x < GRID_SIZE; x++) {
+      const rand = Math.random();
+      let type = 'empty';
+      if (rand < 0.1) type = 'trap';
+      else if (rand < 0.25) type = 'loot';
+      else if (rand < 0.3) type = 'exit';
+      row.push({ x, y, type, revealed: false });
+    }
+    grid.push(row);
+  }
+  // Ensure center is start and one exit exists
+  grid[2][2] = { x: 2, y: 2, type: 'start', revealed: true };
+  const exitX = Math.floor(Math.random() * GRID_SIZE);
+  const exitY = Math.floor(Math.random() * GRID_SIZE);
+  grid[exitY][exitX] = { ...grid[exitY][exitX], type: 'exit' };
+  return grid;
+};
 
 export default function LOTRQuest() {
-  // Game refs and state
-  const canvasRef = useRef(null);
-  const [score, setScore] = useState(0);
-  const [xp, setXP] = useState(0);
-  const [daysClean, setDaysClean] = useState(0);
+  const [grid, setGrid] = useState(generateGrid());
+  const [pos, setPos] = useState({ x: 2, y: 2 });
+  const [gold, setGold] = useState(0);
+  const [health, setHealth] = useState(MAX_HEALTH);
+  const [energy, setEnergy] = useState(
+    parseInt(localStorage.getItem('lotr_energy') || '3')
+  );
+  const [message, setMessage] = useState('Explore the Mines of Moria...');
   const [gameOver, setGameOver] = useState(false);
-  const [jumping, setJumping] = useState(false);
-  const [playerY, setPlayerY] = useState(0); // 0 means on ground, negative is jump height
-  const [obstacles, setObstacles] = useState([]);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState(null);
 
-  const gravity = 1.5;
-  const jumpStrength = 20;
-  const obstacleSpeed = 6;
-  const obstacleFrequency = 90; // frames
-
-  // Track frames for game loop
-  const frameRef = useRef(0);
-  const velocityRef = useRef(0);
-  const playerYRef = useRef(0);
-  const obstaclesRef = useRef([]);
-  const scoreRef = useRef(0);
-
-  // Load progress from localStorage on mount
-  useEffect(() => {
-    const storedDays = parseInt(localStorage.getItem("daysClean")) || 0;
-    const storedXP = parseInt(localStorage.getItem("xp")) || 0;
-    const storedDate = localStorage.getItem("lastUpdated");
-    const today = new Date().toDateString();
-
-    if (storedDate !== today) {
-      localStorage.setItem("lastUpdated", today);
-      localStorage.setItem("daysClean", (storedDays + 1).toString());
-      setDaysClean(storedDays + 1);
-    } else {
-      setDaysClean(storedDays);
-    }
-    setXP(storedXP);
-
-    // Reset score each day
-    setScore(0);
-    scoreRef.current = 0;
-    setGameOver(false);
-    setGameStarted(false);
-    setPlayerY(0);
-    playerYRef.current = 0;
-    velocityRef.current = 0;
-    setObstacles([]);
-    obstaclesRef.current = [];
-    frameRef.current = 0;
-  }, []);
-
-  // Game logic loop
-  useEffect(() => {
-    if (!gameStarted || gameOver) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    const width = canvas.width;
-    const height = canvas.height;
-
-    let animationFrameId;
-
-    const playerX = 50;
-    const playerRadius = 20;
-    const groundY = height - 50;
-
-    const jump = () => {
-      if (!jumping && playerYRef.current === 0) {
-        velocityRef.current = -jumpStrength;
-        setJumping(true);
-      }
-    };
-
-    const drawPlayer = (y) => {
-      ctx.beginPath();
-      ctx.fillStyle = "#8b4513"; // Brown (Frodo)
-      ctx.shadowColor = "gold";
-      ctx.shadowBlur = 10;
-      ctx.arc(playerX, groundY + y, playerRadius, 0, 2 * Math.PI);
-      ctx.fill();
-
-      // Draw ring on finger (small yellow ring on circle)
-      ctx.beginPath();
-      ctx.strokeStyle = "yellow";
-      ctx.lineWidth = 3;
-      ctx.arc(playerX + 8, groundY + y + 10, 6, 0, 2 * Math.PI);
-      ctx.stroke();
-    };
-
-    const drawObstacle = (x) => {
-      ctx.beginPath();
-      ctx.fillStyle = "black"; // Ringwraith
-      ctx.shadowColor = "red";
-      ctx.shadowBlur = 10;
-      ctx.rect(x, groundY - 40, 20, 40);
-      ctx.fill();
-    };
-
-    const update = () => {
-      frameRef.current++;
-
-      // Clear canvas
-      ctx.clearRect(0, 0, width, height);
-
-      // Update player position
-      velocityRef.current += gravity;
-      playerYRef.current += velocityRef.current;
-      if (playerYRef.current > 0) {
-        playerYRef.current = 0;
-        velocityRef.current = 0;
-        setJumping(false);
-      }
-      setPlayerY(playerYRef.current);
-
-      // Draw ground
-      ctx.fillStyle = "#654321";
-      ctx.fillRect(0, groundY + playerRadius, width, height - groundY - playerRadius);
-
-      // Draw player
-      drawPlayer(playerYRef.current);
-
-      // Handle obstacles
-      if (frameRef.current % obstacleFrequency === 0) {
-        const newObstacle = width;
-        obstaclesRef.current.push(newObstacle);
-      }
-
-      // Move obstacles and check collisions
-      const newObstacles = [];
-      let collision = false;
-
-      for (let x of obstaclesRef.current) {
-        const newX = x - obstacleSpeed;
-
-        // Check collision (simple box vs circle approximation)
-        if (
-          newX < playerX + playerRadius &&
-          newX + 20 > playerX - playerRadius &&
-          playerYRef.current > -playerRadius // player is low enough to hit obstacle
-        ) {
-          collision = true;
-        }
-
-        if (newX > -20) {
-          newObstacles.push(newX);
-          drawObstacle(newX);
-        } else {
-          // Passed obstacle, increase score
-          scoreRef.current++;
-          setScore(scoreRef.current);
-        }
-      }
-      obstaclesRef.current = newObstacles;
-      setObstacles(newObstacles);
-
-      if (collision) {
-        setGameOver(true);
-        // Save XP progress (score * 2)
-        const gainedXP = scoreRef.current * 2;
-        const newXP = xp + gainedXP;
-        setXP(newXP);
-        localStorage.setItem("xp", newXP.toString());
-      } else {
-        animationFrameId = requestAnimationFrame(update);
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(update);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [gameStarted, gameOver, xp]);
-
-  const startGame = () => {
-    if (!gameOver) setGameStarted(true);
+  const directions = {
+    ArrowUp: { x: 0, y: -1 },
+    ArrowDown: { x: 0, y: 1 },
+    ArrowLeft: { x: -1, y: 0 },
+    ArrowRight: { x: 1, y: 0 },
   };
 
-  const resetJourney = () => {
-    if (window.confirm("Are you sure you want to reset your journey?")) {
-      localStorage.setItem("daysClean", "0");
-      localStorage.setItem("xp", "0");
-      localStorage.setItem("lastUpdated", new Date().toDateString());
-      setDaysClean(0);
-      setXP(0);
-      setScore(0);
-      setGameOver(false);
-      setGameStarted(false);
-      setPlayerY(0);
-      playerYRef.current = 0;
-      velocityRef.current = 0;
-      setObstacles([]);
-      obstaclesRef.current = [];
-      frameRef.current = 0;
-      setJumping(false);
-    }
-  };
-
-  // Calculate milestone and progress
-  const currentStageIndex = Math.floor(daysClean / daysPerStage);
-  const currentMilestone = milestones[currentStageIndex] || "Victory!";
-  const progressPercentage = Math.min((daysClean / totalDays) * 100, 100);
-  const level = Math.floor(xp / 50) + 1;
-
-  // Keyboard & touch controls
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.code === "Space") {
-        e.preventDefault();
-        if (!gameOver) startGame();
-        if (!jumping) setJumping(true);
-        velocityRef.current = -jumpStrength;
+      if (!directions[e.key] || gameOver) return;
+      move(directions[e.key]);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [pos, gameOver]);
+
+  const move = (dir) => {
+    const newX = pos.x + dir.x;
+    const newY = pos.y + dir.y;
+    if (newX < 0 || newX >= GRID_SIZE || newY < 0 || newY >= GRID_SIZE) return;
+
+    const tile = grid[newY][newX];
+    tile.revealed = true;
+    setPos({ x: newX, y: newY });
+    setGrid([...grid]);
+
+    if (tile.type === 'loot') {
+      setGold(gold + 10);
+      setMessage('You found gold! +10');
+    } else if (tile.type === 'trap') {
+      setHealth(health - 1);
+      setMessage('A trap! You lost 1 health.');
+      if (health - 1 <= 0) {
+        setMessage('You were defeated in the mines...');
+        setGameOver(true);
       }
-    };
+    } else if (tile.type === 'exit') {
+      setMessage('You escaped with your loot!');
+      setGameOver(true);
+    } else {
+      setMessage('You explore further...');
+    }
+  };
 
-    const handleTouch = (e) => {
-      e.preventDefault();
-      if (!gameOver) startGame();
-      if (!jumping) setJumping(true);
-      velocityRef.current = -jumpStrength;
-    };
-
-    window.addEventListener("keydown", handleKey);
-    window.addEventListener("touchstart", handleTouch);
-
-    return () => {
-      window.removeEventListener("keydown", handleKey);
-      window.removeEventListener("touchstart", handleTouch);
-    };
-  }, [gameOver, jumping]);
+  const startNewRun = () => {
+    if (energy <= 0) {
+      setMessage("You're too tired to enter again today.");
+      return;
+    }
+    const newEnergy = energy - 1;
+    localStorage.setItem('lotr_energy', newEnergy);
+    setEnergy(newEnergy);
+    setGrid(generateGrid());
+    setPos({ x: 2, y: 2 });
+    setHealth(MAX_HEALTH);
+    setGold(0);
+    setGameOver(false);
+    setMessage('You enter the mines...');
+  };
 
   return (
-    <div style={{ maxWidth: "700px", margin: "auto", padding: "1rem", fontFamily: "'Cinzel', serif", textAlign: "center" }}>
-      <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem", color: "#ccaa00", textShadow: "1px 1px 4px #000" }}>
-        LOTR Nicotine Quest: Ring Runner
-      </h1>
+    <div
+      style={{
+        fontFamily: 'Cinzel, serif',
+        padding: '1rem',
+        color: '#eee',
+        backgroundColor: '#111',
+        minHeight: '100vh',
+        textAlign: 'center',
+      }}
+    >
+      <h1 style={{ color: '#ccaa00' }}>Loot Rush: Mines of Moria</h1>
+      <p style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>{message}</p>
 
-      <canvas
-        ref={canvasRef}
-        width={700}
-        height={200}
-        style={{ border: "3px solid #663300", borderRadius: "10px", backgroundColor: "#222", display: "block", margin: "auto" }}
-        aria-label="Ring Runner game canvas"
-      />
-
-      {gameOver ? (
-        <div style={{ marginTop: "1rem", color: "#cc4444", fontWeight: "bold" }}>
-          <p>You were caught by a Ringwraith! You gained {score * 2} XP this run.</p>
-          <button
-            onClick={() => {
-              setScore(0);
-              scoreRef.current = 0;
-              setGameOver(false);
-              setGameStarted(false);
-              setPlayerY(0);
-              playerYRef.current = 0;
-              velocityRef.current = 0;
-              setObstacles([]);
-              obstaclesRef.current = [];
-              frameRef.current = 0;
-              setJumping(false);
-            }}
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${GRID_SIZE}, 50px)`, gap: '4px', justifyContent: 'center', marginBottom: '1rem' }}>
+        {grid.flat().map((tile) => (
+          <div
+            key={`${tile.x},${tile.y}`}
             style={{
-              marginTop: "0.5rem",
-              padding: "0.5rem 1rem",
-              backgroundColor: "#ccaa00",
-              color: "#000",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontWeight: "bold",
+              width: '50px',
+              height: '50px',
+              backgroundColor: tile.revealed ? (tile.type === 'trap' ? '#922' : tile.type === 'loot' ? '#cc0' : tile.type === 'exit' ? '#0c0' : '#444') : '#222',
+              border: pos.x === tile.x && pos.y === tile.y ? '2px solid #fff' : '1px solid #333',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '0.8rem',
             }}
           >
-            Play Again
-          </button>
-        </div>
-      ) : (
-        <button
-          onClick={startGame}
-          disabled={gameStarted}
-          style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            backgroundColor: gameStarted ? "#999" : "#ccaa00",
-            color: "#000",
-            border: "none",
-            borderRadius: "5px",
-            cursor: gameStarted ? "not-allowed" : "pointer",
-            fontWeight: "bold",
-          }}
-        >
-          {gameStarted ? "Running..." : "Start Running (Tap or Press Space)"}
-        </button>
-      )}
-
-      <div style={{ marginTop: "1.5rem", textAlign: "left", maxWidth: "700px", marginLeft: "auto", marginRight: "auto" }}>
-        <h2 style={{ color: "#ccaa00" }}>Your Journey Progress</h2>
-        <p>
-          Day {daysClean} - You have reached <strong>{currentMilestone}</strong>
-        </p>
-        <p>Level {level} | XP: {xp}</p>
-
-        <div style={{ height: "20px", width: "100%", backgroundColor: "#ddd", margin: "10px 0", borderRadius: "10px" }}>
-          <div
-            style={{
-              height: "100%",
-              width: `${progressPercentage}%`,
-              backgroundColor: "#ffcc00",
-              borderRadius: "10px",
-              transition: "width 0.3s ease-in-out",
-            }}
-          />
-        </div>
-
-        <button
-          onClick={resetJourney}
-          style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            backgroundColor: "#cc4444",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            width: "100%",
-          }}
-        >
-          Reset Journey
-        </button>
+            {tile.revealed ? (tile.type === 'trap' ? '💥' : tile.type === 'loot' ? '💰' : tile.type === 'exit' ? '🚪' : '') : ''}
+          </div>
+        ))}
       </div>
 
-      <p style={{ marginTop: "1rem", color: "#ccc", fontSize: "0.85rem" }}>
-        Tap the screen or press spacebar to jump over Ringwraiths. Each one avoided adds XP to your quest to destroy nicotine’s power.
+      <div style={{ marginBottom: '1rem' }}>
+        <p>❤️ Health: {health} / {MAX_HEALTH}</p>
+        <p>⚡ Willpower: {energy} / {MAX_ENERGY}</p>
+        <p>🪙 Gold: {gold}</p>
+      </div>
+
+      <button
+        onClick={startNewRun}
+        disabled={gameOver === false && energy > 0}
+        style={{
+          backgroundColor: '#ccaa00',
+          color: '#000',
+          border: 'none',
+          padding: '0.5rem 1rem',
+          borderRadius: '5px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+        }}
+      >
+        {energy <= 0 ? 'No Energy Left Today' : gameOver ? 'Start New Run' : 'Exploring...'}
+      </button>
+
+      <p style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#888' }}>
+        Use arrow keys to move. Tap Start Run when cravings hit.
       </p>
     </div>
   );
