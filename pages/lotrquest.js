@@ -31,11 +31,16 @@ export default function LOTRQuest() {
   const [pos, setPos] = useState({ x: 2, y: 2 });
   const [gold, setGold] = useState(0);
   const [health, setHealth] = useState(MAX_HEALTH);
-  const [energy, setEnergy] = useState(
-    parseInt(localStorage.getItem('lotr_energy') || '3')
-  );
+  const [energy, setEnergy] = useState(3);
   const [message, setMessage] = useState('Explore the Mines of Moria...');
   const [gameOver, setGameOver] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedEnergy = parseInt(localStorage.getItem('lotr_energy') || '3');
+      setEnergy(storedEnergy);
+    }
+  }, []);
 
   const directions = {
     ArrowUp: { x: 0, y: -1 },
@@ -87,7 +92,9 @@ export default function LOTRQuest() {
       return;
     }
     const newEnergy = energy - 1;
-    localStorage.setItem('lotr_energy', newEnergy);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lotr_energy', newEnergy);
+    }
     setEnergy(newEnergy);
     setGrid(generateGrid());
     setPos({ x: 2, y: 2 });
