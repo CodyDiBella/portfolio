@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
 
 const milestones = [
   "The Shire",
@@ -20,7 +18,7 @@ const milestones = [
 const daysPerStage = 7;
 const totalDays = milestones.length * daysPerStage;
 
-export default function LOTRQuitQuest() {
+export default function LOTRQuest() {
   const [daysClean, setDaysClean] = useState(0);
   const [lastUpdated, setLastUpdated] = useState(null);
 
@@ -48,7 +46,7 @@ export default function LOTRQuitQuest() {
   const progressPercentage = Math.min((daysClean / totalDays) * 100, 100);
 
   const resetProgress = () => {
-    if (confirm("Are you sure you want to reset your journey?")) {
+    if (window.confirm("Are you sure you want to reset your journey?")) {
       localStorage.setItem("daysClean", "0");
       localStorage.setItem("lastUpdated", new Date().toDateString());
       setDaysClean(0);
@@ -56,27 +54,46 @@ export default function LOTRQuitQuest() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 text-center">
-      <img src="/images/lotr-logo.png" alt="LOTR Logo" className="w-48 mb-6" />
-      <h1 className="text-3xl font-bold mb-2">The Quest to Destroy the Nicotine Ring</h1>
-      <p className="mb-4 text-lg">Day {daysClean} - You have reached <strong>{currentMilestone}</strong></p>
-      <Progress value={progressPercentage} className="w-full max-w-lg h-6 mb-6" />
-      <div className="flex flex-wrap justify-center gap-3">
+    <div style={{ maxWidth: "600px", margin: "auto", padding: "2rem", textAlign: "center", fontFamily: "serif" }}>
+      <img src="/images/lotr-logo.png" alt="LOTR Logo" style={{ width: "200px", marginBottom: "1rem" }} />
+      <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>The Quest to Destroy the Nicotine Ring</h1>
+      <p>Day {daysClean} - You have reached <strong>{currentMilestone}</strong></p>
+
+      <div style={{ height: "20px", width: "100%", backgroundColor: "#ddd", margin: "20px 0", borderRadius: "10px" }}>
+        <div
+          style={{
+            height: "100%",
+            width: `${progressPercentage}%`,
+            backgroundColor: "#4caf50",
+            borderRadius: "10px",
+            transition: "width 0.3s ease-in-out"
+          }}
+        />
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "center", fontSize: "0.9rem" }}>
         {milestones.map((milestone, index) => (
           <div
             key={milestone}
-            className={`rounded-xl p-3 w-40 text-sm shadow-lg ${
-              index === currentStageIndex ? "bg-yellow-300 text-black" : index < currentStageIndex ? "bg-green-600 text-white" : "bg-gray-300 text-gray-700"
-            }`}
+            style={{
+              padding: "0.5rem 1rem",
+              borderRadius: "8px",
+              backgroundColor: index === currentStageIndex ? "#ffe082" : index < currentStageIndex ? "#81c784" : "#ccc",
+              color: index <= currentStageIndex ? "#000" : "#555"
+            }}
           >
             {milestone}
           </div>
         ))}
       </div>
-      <Button variant="destructive" onClick={resetProgress} className="mt-8">
+
+      <button onClick={resetProgress} style={{ marginTop: "2rem", padding: "0.5rem 1rem", backgroundColor: "#d32f2f", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>
         Reset Journey
-      </Button>
-      <p className="mt-6 text-sm text-gray-500">Stay clean and return daily to move forward. One day = one step closer to freedom.</p>
+      </button>
+
+      <p style={{ marginTop: "1rem", fontSize: "0.8rem", color: "#777" }}>
+        Stay clean and return daily to move forward. One day = one step closer to freedom.
+      </p>
     </div>
   );
 }
