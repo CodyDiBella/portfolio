@@ -1,397 +1,238 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const COLS = 13;
-const ROWS = 10;
-const CENTER_X = Math.floor(COLS / 2);
-const CENTER_Y = Math.floor(ROWS / 2);
-const SMAUG_STRENGTH = 15;
-const START_HEALTH = 5;
+const GRID_WIDTH = 13;
+const GRID_HEIGHT = 10;
+const INITIAL_HP = 5;
+const SMOAG_POWER = 15;
 const XP_PER_LEVEL = 5;
-const MAX_HEALTH_CAP = 15;
-const PALANTIRI_COUNT = 2;
+const MAX_HEALTH = 15;
 
-const ENEMIES = [
-  { name: "Goblin", emoji: "👺", maxStrength: 3 },
-  { name: "Orc", emoji: "👹", maxStrength: 5 },
-  { name: "Warg", emoji: "🐺", maxStrength: 7 },
-  { name: "Troll", emoji: "🧌", maxStrength: 9 },
-];
-
-function randomInt(max) {
-  return Math.floor(Math.random() * max);
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function generateEnemy() {
-  const enemyType = ENEMIES[randomInt(ENEMIES.length)];
-  return {
-    type: enemyType.name,
-    emoji: enemyType.emoji,
-    strength: 1 + randomInt(enemyType.maxStrength),
-    defeated: false,
-  };
-}
+function generateGrid() {
+  const grid = [];
+  const totalTiles = GRID_WIDTH * GRID_HEIGHT;
 
-function createGrid() {
-  // Create empty grid with enemies, Smaug in center, and palantiri
-  const grid = Array(ROWS)
-    .fill()
-    .map((_, y) =>
-      Array(COLS)
-        .fill()
-        .map((_, x) => {
-          if (x === CENTER_X && y === CENTER_Y)
-            return {
-              x,
-              y,
-              type: "smaug",
-              emoji: "🐉",
-              strength: SMAUG_STRENGTH,
-              revealed: true,
-              defeated: false,
-              adjacentSum: null,
-            };
-          else
-            return {
-              x,
-              y,
-              ...generateEnemy(),
-              revealed: false,
-              adjacentSum: null,
-            };
-        })
-    );
-
-  // Place palantiri randomly (but not on Smaug)
-  let placed = 0;
-  while (placed < PALANTIRI_COUNT) {
-    const px = randomInt(COLS);
-    const py = randomInt(ROWS);
-    if (
-      (px !== CENTER_X || py !== CENTER_Y) &&
-      !grid[py][px].palantir &&
-      !grid[py][px].revealed
-    ) {
-      grid[py][px] = {
-        x: px,
-        y: py,
-        type: "palantir",
-        emoji: "🔮",
-        revealed: true,
+  for (let y = 0; y < GRID_HEIGHT; y++) {
+    const row = [];
+    for (let x = 0; x < GRID_WIDTH; x++) {
+      row.push({
+        x,
+        y,
+        type: "unknown", // unknown, enemy, heal, palantir, smaug, empty, cleared
+        revealed: false,
+        enemyPower: 0,
+        adjacentPower: 0,
         defeated: false,
-        adjacentSum: null,
-      };
-      placed++;
+      });
+    }
+    grid.push(row);
+  }
+
+  // Place Smaug in the center
+  const centerY = Math.floor(GRID_HEIGHT / 2);
+  const centerX = Math.floor(GRID_WIDTH / 2);
+  grid[centerY][centerX].type = "smaug";
+  grid[centerY][centerX].enemyPower = SMOAG_POWER;
+
+  // Place 1 Palantír near a corner
+  const palantir = grid[getRandomInt(0, 2)][getRandomInt(0, 2)];
+  palantir.type = "palantir";
+
+  // Place healing tiles
+  for (let i = 0; i < 3; i++) {
+    let x, y;
+    do {
+      x = getRandomInt(0, GRID_WIDTH - 1);
+      y = getRandomInt(0, GRID_HEIGHT - 1);
+    } while (grid[y][x].type !== "unknown");
+    grid[y][x].type = "heal";
+  }
+
+  // Place enemies
+  for (let i = 0; i < Math.floor(totalTiles * 0.25); i++) {
+    let x, y;
+    do {
+      x = getRandomInt(0, GRID_WIDTH - 1);
+      y = getRandomInt(0, GRID_HEIGHT - 1);
+    } while (grid[y][x].type !== "unknown");
+    grid[y][x].type = "enemy";
+    grid[y][x].enemyPower = getRandomInt(1, 9);
+  }
+
+  // Remaining are empty
+  for (let y = 0; y < GRID_HEIGHT; y++) {
+    for (let x = 0; x < GRID_WIDTH; x++) {
+      const cell = grid[y][x];
+      if (cell.type === "unknown") {
+        cell.type = "empty";
+      }
     }
   }
+
   return grid;
 }
 
-function getNeighbors(x, y) {
-  const neighbors = [];
-  for (let dy = -1; dy <= 1; dy++) {
-    for (let dx = -1; dx <= 1; dx++) {
-      if (dx === 0 && dy === 0) continue;
-      const nx = x + dx;
-      const ny = y + dy;
-      if (nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS) neighbors.push([nx, ny]);
-    }
-  }
-  return neighbors;
-}
-
-export default function LOTRQuest() {
+export default function LOTRDragonsweeper() {
   const [grid, setGrid] = useState([]);
-  const [hp, setHP] = useState(START_HEALTH);
-  const [maxHP, setMaxHP] = useState(START_HEALTH);
-  const [xp, setXP] = useState(0);
-  const [palantiriLeft, setPalantiriLeft] = useState(PALANTIRI_COUNT);
-  const [message, setMessage] = useState(
-    "Use a Palantír (🔮) to scout your foes. Click any revealed enemy to fight!"
-  );
+  const [playerHP, setPlayerHP] = useState(INITIAL_HP);
+  const [playerXP, setPlayerXP] = useState(0);
+  const [level, setLevel] = useState(1);
   const [gameOver, setGameOver] = useState(false);
   const [victory, setVictory] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     resetGame();
   }, []);
 
-  function resetGame() {
-    setGrid(createGrid());
-    setHP(START_HEALTH);
-    setMaxHP(START_HEALTH);
-    setXP(0);
-    setPalantiriLeft(PALANTIRI_COUNT);
-    setMessage(
-      "Use a Palantír (🔮) to scout your foes. Click any revealed enemy to fight!"
-    );
+  const resetGame = () => {
+    setGrid(generateGrid());
+    setPlayerHP(INITIAL_HP);
+    setPlayerXP(0);
+    setLevel(1);
     setGameOver(false);
     setVictory(false);
-  }
+    setMessage("Use the Palantír to begin your journey");
+  };
 
-  function revealAround(x, y) {
-    if (palantiriLeft <= 0) {
-      setMessage("No Palantíri left to use!");
-      return;
-    }
-    if (gameOver) return;
+  const revealAdjacentPower = (x, y, newGrid) => {
+    let totalPower = 0;
+    const dirs = [
+      [-1, -1], [0, -1], [1, -1],
+      [-1, 0],           [1, 0],
+      [-1, 1], [0, 1], [1, 1],
+    ];
+    dirs.forEach(([dx, dy]) => {
+      const nx = x + dx;
+      const ny = y + dy;
+      if (
+        nx >= 0 && nx < GRID_WIDTH &&
+        ny >= 0 && ny < GRID_HEIGHT &&
+        ["enemy", "smaug"].includes(newGrid[ny][nx].type) &&
+        !newGrid[ny][nx].defeated
+      ) {
+        totalPower += newGrid[ny][nx].enemyPower;
+      }
+    });
+    newGrid[y][x].adjacentPower = totalPower;
+    newGrid[y][x].revealed = true;
+    newGrid[y][x].type = "cleared";
+  };
 
-    const newGrid = grid.map((row) => row.map((cell) => ({ ...cell })));
+  const handleCellClick = (cell) => {
+    if (gameOver || victory || cell.revealed) return;
+    const newGrid = [...grid.map((row) => [...row])];
 
-    let revealedCount = 0;
-    for (let dy = -1; dy <= 1; dy++) {
-      for (let dx = -1; dx <= 1; dx++) {
-        const nx = x + dx;
-        const ny = y + dy;
-        if (nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS) {
-          if (!newGrid[ny][nx].revealed) {
+    if (cell.type === "palantir") {
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = cell.x + dx;
+          const ny = cell.y + dy;
+          if (nx >= 0 && nx < GRID_WIDTH && ny >= 0 && ny < GRID_HEIGHT) {
             newGrid[ny][nx].revealed = true;
-            revealedCount++;
           }
         }
       }
-    }
-
-    setGrid(newGrid);
-    setPalantiriLeft((p) => p - 1);
-    setMessage(
-      `Palantír reveals ${revealedCount} cells around (${x + 1}, ${y + 1}).`
-    );
-  }
-
-  function calculateAdjacentSum(x, y, gridRef) {
-    let sum = 0;
-    const neighbors = getNeighbors(x, y);
-    neighbors.forEach(([nx, ny]) => {
-      const c = gridRef[ny][nx];
-      if (!c.defeated && c.type !== "palantir") sum += c.strength;
-    });
-    return sum;
-  }
-
-  function fight(x, y) {
-    if (gameOver) return;
-
-    const cell = grid[y][x];
-    if (!cell.revealed || cell.defeated || cell.type === "palantir") {
-      setMessage("Cannot fight that.");
-      return;
-    }
-
-    if (cell.type === "smaug") {
-      if (hp > cell.strength) {
-        // Victory!
-        const newGrid = grid.map((row) => row.map((c) => ({ ...c })));
-        newGrid[y][x].defeated = true;
-        setGrid(newGrid);
-        setHP(hp - cell.strength);
-        setXP((xp) => xp + cell.strength);
-        setMessage(
-          "🏆 You have slain Smaug! The Lonely Mountain is freed from his terror!"
-        );
-        setVictory(true);
+      setMessage("The Palantír reveals nearby dangers");
+    } else if (cell.type === "heal") {
+      newGrid[cell.y][cell.x].revealed = true;
+      setPlayerHP((hp) => Math.min(MAX_HEALTH, hp + 1));
+      setMessage("You found Lembas Bread and healed 1 HP!");
+    } else if (["enemy", "smaug"].includes(cell.type)) {
+      if (cell.enemyPower >= playerHP) {
+        setMessage("That foe was too strong. You fell in battle.");
         setGameOver(true);
-      } else {
-        // Death by Smaug
-        setHP(0);
-        setMessage(
-          "You fought bravely but Smaug's fire was too much. You have fallen."
-        );
-        setGameOver(true);
+        return;
       }
-      return;
+      newGrid[cell.y][cell.x].defeated = true;
+      revealAdjacentPower(cell.x, cell.y, newGrid);
+      const xpGain = Math.ceil(cell.enemyPower * 1.5);
+      const newXP = playerXP + xpGain;
+      let newLevel = level;
+      let newMaxHP = playerHP;
+      if (newXP >= level * XP_PER_LEVEL) {
+        newLevel++;
+        newMaxHP = Math.min(MAX_HEALTH, newMaxHP + 1);
+        setMessage(`You leveled up to ${newLevel} and gained +1 max HP!`);
+      } else {
+        setMessage(`You defeated a foe and gained ${xpGain} XP.`);
+      }
+      setPlayerXP(newXP);
+      setLevel(newLevel);
+      setPlayerHP(newMaxHP - cell.enemyPower);
+      if (cell.type === "smaug") {
+        setVictory(true);
+        setMessage("You defeated Smaug and won the game!");
+      }
+    } else {
+      revealAdjacentPower(cell.x, cell.y, newGrid);
+      setMessage("Explored empty land. Plan your next move.");
     }
-
-    if (hp <= cell.strength) {
-      // Player dies
-      setHP(0);
-      setMessage(
-        `The ${cell.type} (power ${cell.strength}) overpowered you. You have fallen.`
-      );
-      setGameOver(true);
-      return;
-    }
-
-    // Player wins fight
-    const newGrid = grid.map((row) => row.map((c) => ({ ...c })));
-    newGrid[y][x].defeated = true;
-    newGrid[y][x].revealed = true;
-    // Show adjacent sum on that cell after defeat
-    newGrid[y][x].adjacentSum = calculateAdjacentSum(x, y, newGrid);
 
     setGrid(newGrid);
-    setHP(hp - cell.strength);
-    setXP((xp) => xp + cell.strength);
-    setMessage(
-      `Defeated ${cell.type} (power ${cell.strength}). Gained ${cell.strength} XP. Adjacent foes total power: ${newGrid[y][x].adjacentSum}`
-    );
-  }
-
-  // Level up if enough XP
-  useEffect(() => {
-    if (xp >= XP_PER_LEVEL && maxHP < MAX_HEALTH_CAP) {
-      setXP((xp) => xp - XP_PER_LEVEL);
-      setMaxHP((hp) => hp + 1);
-      setHP((hp) => Math.min(hp + 1, maxHP + 1));
-      setMessage(
-        `Your courage grows! Max HP increased to ${maxHP + 1}. Health restored by 1.`
-      );
-    }
-  }, [xp, maxHP]);
+  };
 
   return (
-    <div
-      style={{
-        fontFamily: "'Palatino Linotype', 'Book Antiqua', Palatino, serif",
-        backgroundColor: "#111111",
-        color: "#f0e6d2",
-        minHeight: "100vh",
-        padding: 16,
-        userSelect: "none",
-      }}
-    >
-      <h1 style={{ textAlign: "center", color: "#e2c044", marginBottom: 10 }}>
-        LOTR Dragonsweeper Quest
-      </h1>
-
-      <p style={{ maxWidth: 480, margin: "auto", marginBottom: 12, fontSize: 16 }}>
-        {message}
-      </p>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${COLS}, 40px)`,
-          justifyContent: "center",
-          gap: 4,
-          marginBottom: 16,
-        }}
-      >
-        {grid.flat().map((cell) => {
-          const isDefeated = cell.defeated;
-          const isRevealed = cell.revealed;
-
-          // Determine cell content and style
-          let content = "";
-          let style = {
-            width: 40,
-            height: 40,
-            backgroundColor: "#222",
-            color: "#eee",
-            borderRadius: 6,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            fontWeight: "bold",
-            fontSize: 18,
-            cursor: gameOver ? "default" : "pointer",
-            boxShadow: "0 0 4px #000 inset",
-            userSelect: "none",
-            transition: "background-color 0.2s",
-            border: "2px solid #444",
-          };
-
-          if (isDefeated) {
-            content = "☠️";
-            style.backgroundColor = "#660000";
-            style.color = "#a88";
-            style.cursor = "default";
-          } else if (!isRevealed) {
-            content = "?";
-            style.backgroundColor = "#333";
-            style.color = "#555";
-          } else if (cell.type === "palantir") {
-            content = cell.emoji;
-            style.backgroundColor = "#003366";
-            style.color = "#99ccff";
-          } else if (cell.type === "smaug") {
-            content = `${cell.emoji}${cell.strength}`;
-            style.backgroundColor = "#440000";
-            style.color = "#ffaaaa";
-            style.fontWeight = "900";
-          } else {
-            // Enemy cell revealed and alive
-            content = (
-              <>
-                {cell.emoji}
-                {cell.adjacentSum !== null ? cell.adjacentSum : ""}
-              </>
-            );
-            style.backgroundColor = "#222222";
-            style.color = "#ffd700";
-            style.fontWeight = "700";
-          }
-
-          return (
-            <div
-              key={`${cell.x}-${cell.y}`}
-              title={
-                isDefeated
-                  ? "Defeated enemy"
-                  : !isRevealed
-                  ? "Unrevealed"
-                  : cell.type === "palantir"
-                  ? "Palantír - reveals nearby tiles"
-                  : `${cell.type} (power ${cell.strength})`
-              }
-              onClick={() => {
-                if (gameOver) return;
-                if (cell.type === "palantir") revealAround(cell.x, cell.y);
-                else fight(cell.x, cell.y);
-              }}
-              style={style}
-            >
-              {content}
-            </div>
-          );
-        })}
+    <div style={{ padding: 10, maxWidth: 800, margin: "auto", fontFamily: "serif" }}>
+      <h2 style={{ textAlign: "center" }}>🧙 LOTR: Dragonsweeper Quest 🐉</h2>
+      <p style={{ textAlign: "center" }}>{message}</p>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${GRID_WIDTH}, 30px)`, gap: 2, justifyContent: "center" }}>
+        {grid.flat().map((cell) => (
+          <div
+            key={`${cell.x}-${cell.y}`}
+            onClick={() => handleCellClick(cell)}
+            style={{
+              width: 30,
+              height: 30,
+              fontSize: 18,
+              backgroundColor: cell.revealed ? "#eee" : "#444",
+              color: cell.revealed ? "black" : "white",
+              border: "1px solid #999",
+              textAlign: "center",
+              lineHeight: "30px",
+              cursor: gameOver || victory ? "default" : "pointer",
+              userSelect: "none",
+            }}
+          >
+            {cell.revealed
+              ? cell.type === "heal"
+                ? "💖"
+                : cell.type === "palantir"
+                ? "🔮"
+                : cell.type === "smaug" && cell.defeated
+                ? cell.adjacentPower || "✔️"
+                : cell.defeated
+                ? cell.adjacentPower || "✔️"
+                : cell.type === "cleared"
+                ? cell.adjacentPower || ""
+                : "?"
+              : "?"}
+          </div>
+        ))}
       </div>
 
-      <div
-        style={{
-          maxWidth: 480,
-          margin: "auto",
-          fontSize: 18,
-          marginBottom: 12,
-          userSelect: "none",
-        }}
-      >
-        <div>
-          ❤️ HP: {hp} / {maxHP} &nbsp;&nbsp; 🌟 XP: {xp} &nbsp;&nbsp; 🔮 Palantíri:{" "}
-          {palantiriLeft}
-        </div>
-      </div>
-
-      {(gameOver || victory) && (
-        <div style={{ textAlign: "center", marginTop: 20 }}>
+      <div style={{ marginTop: 20, textAlign: "center" }}>
+        <p>❤️ HP: {playerHP} &nbsp;&nbsp; ✨ XP: {playerXP} &nbsp;&nbsp; 🧱 Level: {level}</p>
+        {(gameOver || victory) && (
           <button
             onClick={resetGame}
             style={{
-              padding: "10px 20px",
-              fontSize: 18,
-              backgroundColor: "#e2c044",
+              padding: "8px 16px",
+              fontSize: 16,
+              backgroundColor: "#d0a748",
+              color: "white",
               border: "none",
-              borderRadius: 8,
+              borderRadius: 6,
               cursor: "pointer",
-              fontWeight: "bold",
             }}
           >
-            {victory ? "Play Again (Victory!)" : "Restart Game"}
+            {victory ? "🎉 Play Again!" : "🔁 Restart"}
           </button>
-        </div>
-      )}
-
-      <footer
-        style={{
-          marginTop: 40,
-          fontSize: 12,
-          textAlign: "center",
-          color: "#555",
-          userSelect: "none",
-        }}
-      >
-        LOTR Dragonsweeper inspired by Daniel Benmergui’s Dragonsweeper — themed for
-        your quitting journey.
-      </footer>
+        )}
+      </div>
     </div>
   );
 }
