@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Head from "next/head";
 
 const GRID_WIDTH = 13;
 const GRID_HEIGHT = 10;
@@ -21,7 +22,7 @@ function generateGrid() {
       row.push({
         x,
         y,
-        type: "unknown", // unknown, enemy, heal, palantir, smaug, empty, cleared
+        type: "unknown",
         revealed: false,
         enemyPower: 0,
         adjacentPower: 0,
@@ -31,15 +32,16 @@ function generateGrid() {
     grid.push(row);
   }
 
-  // Place Smaug in the center
   const centerY = Math.floor(GRID_HEIGHT / 2);
   const centerX = Math.floor(GRID_WIDTH / 2);
   grid[centerY][centerX].type = "smaug";
   grid[centerY][centerX].enemyPower = SMOAG_POWER;
 
-  // Place 1 Palantír near a corner
-  const palantir = grid[getRandomInt(0, 2)][getRandomInt(0, 2)];
-  palantir.type = "palantir";
+  // Place 1 Palantír in a random corner
+  const palantirX = getRandomInt(0, 2);
+  const palantirY = getRandomInt(0, 2);
+  grid[palantirY][palantirX].type = "palantir";
+  grid[palantirY][palantirX].revealed = true;
 
   // Place healing tiles
   for (let i = 0; i < 3; i++) {
@@ -177,9 +179,20 @@ export default function LOTRDragonsweeper() {
 
   return (
     <div style={{ padding: 10, maxWidth: 800, margin: "auto", fontFamily: "serif" }}>
+      <Head>
+        <title>LOTR Dragonsweeper</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
       <h2 style={{ textAlign: "center" }}>🧙 LOTR: Dragonsweeper Quest 🐉</h2>
       <p style={{ textAlign: "center" }}>{message}</p>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${GRID_WIDTH}, 30px)`, gap: 2, justifyContent: "center" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${GRID_WIDTH}, 30px)`,
+          gap: 2,
+          justifyContent: "center",
+        }}
+      >
         {grid.flat().map((cell) => (
           <div
             key={`${cell.x}-${cell.y}`}
@@ -188,7 +201,7 @@ export default function LOTRDragonsweeper() {
               width: 30,
               height: 30,
               fontSize: 18,
-              backgroundColor: cell.revealed ? "#eee" : "#444",
+              backgroundColor: cell.revealed ? "#eee" : "#222",
               color: cell.revealed ? "black" : "white",
               border: "1px solid #999",
               textAlign: "center",
