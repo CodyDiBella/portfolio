@@ -1,176 +1,136 @@
 import React, { useState, useEffect } from 'react';
 
-const GRID_SIZE = 6;
-const NUM_TRAPS = 6;
-const NUM_COINS = 8;
-const NUM_RELICS = 3;
-const MAX_HEALTH = 3;
+const SIZE = 7;
+const START = { x: 0, y: SIZE - 1 };
+const MAX_ENEMIES = 12;
+const MAX_POTS = 5;
+const INIT_HEALTH = 5;
+const HEALTH_UPGRADE_COST = 10;
 
-const generateEmptyGrid = () => {
-  return Array(GRID_SIZE).fill(null).map((_, y) =>
-    Array(GRID_SIZE).fill(null).map((_, x) => ({
-      x,
-      y,
-      revealed: false,
-      flagged: false,
-      type: 'empty',
-      adjacentTraps: 0,
-    }))
-  );
-};
-
-const placeRandom = (grid, type, count) => {
-  let placed = 0;
-  while (placed < count) {
-    const y = Math.floor(Math.random() * GRID_SIZE);
-    const x = Math.floor(Math.random() * GRID_SIZE);
-    if (grid[y][x].type === 'empty') {
-      grid[y][x].type = type;
-      placed++;
-    }
+const genGrid = () => {
+  const grid = Array(SIZE).fill().map((_, y) => Array(SIZE).fill().map((_, x) => ({ x, y, type: 'empty', revealed: false })));
+  grid[START.y][START.x].type = 'start';
+  for (let i = 0; i < MAX_ENEMIES; i++) {
+    let ex, ey;
+    do {
+      ex = Math.floor(Math.random() * SIZE);
+      ey = Math.floor(Math.random() * SIZE);
+    } while (grid[ey][ex].type !== 'empty');
+    const strength = 1 + Math.floor(Math.random()*4);
+    grid[ey][ex] = { x:ex, y:ey, type:'enemy', strength, revealed: false };
   }
-};
-
-const countAdjacents = (grid) => {
-  for (let y = 0; y < GRID_SIZE; y++) {
-    for (let x = 0; x < GRID_SIZE; x++) {
-      if (grid[y][x].type === 'trap') continue;
-      let count = 0;
-      for (let dy = -1; dy <= 1; dy++) {
-        for (let dx = -1; dx <= 1; dx++) {
-          const ny = y + dy;
-          const nx = x + dx;
-          if (ny >= 0 && ny < GRID_SIZE && nx >= 0 && nx < GRID_SIZE && grid[ny][nx].type === 'trap') {
-            count++;
-          }
-        }
-      }
-      grid[y][x].adjacentTraps = count;
-    }
+  for (let i = 0; i < MAX_POTS; i++) {
+    let px, py;
+    do {
+      px = Math.floor(Math.random() * SIZE);
+      py = Math.floor(Math.random() * SIZE);
+    } while (grid[py][px].type !== 'empty');
+    grid[py][px] = { x:px, y:py, type:'potion', revealed:false };
   }
+  return grid;
 };
 
 export default function LOTRQuest() {
-  const [grid, setGrid] = useState([]);
-  const [health, setHealth] = useState(MAX_HEALTH);
-  const [coins, setCoins] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return parseInt(localStorage.getItem('lotr_coins') || '0');
-    }
-    return 0;
-  });
-  const [relics, setRelics] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return parseInt(localStorage.getItem('lotr_relics') || '0');
-    }
-    return 0;
-  });
+  const [grid, setGrid] = useState(genGrid());
+  const [pos, setPos] = useState(START);
+  const [health, setHealth] = useState(INIT_HEALTH);
+  const [coins, setCoins] = useState(0);
+  const [maxHealth, setMaxHealth] = useState(INIT_HEALTH);
+  const [message, setMessage] = useState("Begin your journey!");
   const [gameOver, setGameOver] = useState(false);
-  const [message, setMessage] = useState('Tap a tile to reveal the path through Mordor.');
-
-  const startNewGame = () => {
-    const newGrid = generateEmptyGrid();
-    placeRandom(newGrid, 'trap', NUM_TRAPS);
-    placeRandom(newGrid, 'coin', NUM_COINS);
-    placeRandom(newGrid, 'relic', NUM_RELICS);
-    countAdjacents(newGrid);
-    setGrid(newGrid);
-    setHealth(MAX_HEALTH);
-    setGameOver(false);
-    setMessage('Tap a tile to reveal the path through Mordor.');
-  };
-
-  useEffect(() => {
-    startNewGame();
-  }, []);
-
-  const revealTile = (tile) => {
-    if (gameOver || tile.revealed) return;
-    const newGrid = [...grid];
-    const newTile = { ...tile, revealed: true };
-    newGrid[tile.y][tile.x] = newTile;
-
-    if (tile.type === 'trap') {
-      const newHealth = health - 1;
-      setHealth(newHealth);
-      setMessage('You triggered an Orc trap!');
-      if (newHealth <= 0) {
+  
+  const reveal = (x,y) => {
+    const cell = grid[y][x];
+    if (cell.revealed || gameOver) return;
+    cell.revealed = true;
+    if (cell.type==='enemy') {
+      const strength = cell.strength;
+      if (health > strength) {
+        setHealth(health - strength);
+        setCoins(coins + strength*2);
+        setMessage(`You defeated enemy of strength ${strength}!`);
+      } else {
+        setMessage(`Enemy of strength ${strength} defeated you... Game over.`);
         setGameOver(true);
-        setMessage('You succumbed to the dangers of Mordor...');
       }
-    } else if (tile.type === 'coin') {
-      const newCoins = coins + 1;
-      setCoins(newCoins);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('lotr_coins', newCoins);
-      }
-      setMessage('You found gold coins!');
-    } else if (tile.type === 'relic') {
-      const newRelics = relics + 1;
-      setRelics(newRelics);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('lotr_relics', newRelics);
-      }
-      setMessage('You discovered an ancient relic!');
-    } else {
-      setMessage(`Safe. ${tile.adjacentTraps} traps nearby.`);
     }
-
-    setGrid(newGrid);
+    if (cell.type==='potion') {
+      setHealth(Math.min(maxHealth, health+3));
+      setCoins(coins+1);
+      setMessage(`Found healing potion! +3 health`);
+    }
+    if (cell.type==='empty') {
+      setMessage("Empty... proceed carefully.");
+    }
+    setGrid([...grid]);
   };
-
+  
+  const move = (dx,dy) => {
+    const nx = pos.x + dx, ny = pos.y + dy;
+    if (nx<0||ny<0||nx>=SIZE||ny>=SIZE) return;
+    reveal(nx,ny);
+    setPos({x:nx,y:ny});
+  };
+  
+  const healOrUpgrade = () => {
+    if (coins>=HEALTH_UPGRADE_COST) {
+      setCoins(coins-HEALTH_UPGRADE_COST);
+      setMaxHealth(maxHealth+2);
+      setHealth(maxHealth+2);
+      setMessage("You gained +2 max health!");
+    } else setMessage("Need more coins for upgrades.");
+  };
+  
+  const reset = () => {
+    setGrid(genGrid());
+    setPos(START);
+    setHealth(INIT_HEALTH);
+    setMaxHealth(INIT_HEALTH);
+    setCoins(0);
+    setGameOver(false);
+    setMessage("New journey begins.");
+  }
+  
   return (
-    <div style={{ fontFamily: 'Cinzel, serif', padding: '1rem', backgroundColor: '#111', color: '#eee', minHeight: '100vh' }}>
-      <h1 style={{ color: '#ccaa00', textAlign: 'center' }}>Path Through Mordor</h1>
-      <p style={{ textAlign: 'center', marginBottom: '1rem' }}>{message}</p>
-
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${GRID_SIZE}, 48px)`, justifyContent: 'center', gap: '4px' }}>
-        {grid.flat().map((tile) => (
-          <div
-            key={`${tile.x}-${tile.y}`}
-            onClick={() => revealTile(tile)}
-            style={{
-              width: '48px',
-              height: '48px',
-              backgroundColor: tile.revealed ? (tile.type === 'trap' ? '#922' : tile.type === 'coin' ? '#cc0' : tile.type === 'relic' ? '#0cf' : '#444') : '#222',
-              border: '1px solid #333',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-            }}
-          >
-            {tile.revealed ?
-              tile.type === 'trap' ? '💀'
-              : tile.type === 'coin' ? '🪙'
-              : tile.type === 'relic' ? '🧿'
-              : tile.adjacentTraps > 0 ? tile.adjacentTraps : ''
-              : ''}
-          </div>
-        ))}
+    <div style={{fontFamily:'sans-serif',padding:'1rem',background:'#111',color:'#eee'}}>
+      <h1 style={{textAlign:'center'}}>Path Through Mordor</h1>
+      <p>{message}</p>
+      
+      <div style={{display:'grid',gridTemplateColumns:`repeat(${SIZE},40px)`,gap:'2px'}}>
+      {grid.flat().map(cell=>{
+        const isHere = pos.x===cell.x && pos.y===cell.y;
+        return <div key={`${cell.x}-${cell.y}`} onClick={()=>{if(!gameOver)reveal(cell.x,cell.y)}} style={{
+          width:40,height:40,
+          background: cell.revealed
+            ? (cell.type==='empty'?'#555':cell.type==='enemy'?'#900': cell.type==='potion'?'#090':'#222')
+            : (isHere?'#0a0':'#333'),
+          border: isHere?'2px solid #0ff':'1px solid #222',
+          display:'flex',alignItems:'center',justifyContent:'center',
+          fontSize:'0.8rem',
+          cursor: gameOver?'default':'pointer'
+        }}>
+          {cell.revealed
+            ? (cell.type==='enemy'?cell.strength:(cell.type==='potion'?'💧':''))
+            : ''}
+        </div>
+      })}
       </div>
-
-      <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-        <p>❤️ Health: {health} / {MAX_HEALTH}</p>
-        <p>🪙 Gold Coins: {coins}</p>
-        <p>🧿 Relics: {relics}</p>
-        <button
-          onClick={startNewGame}
-          style={{
-            marginTop: '1rem',
-            backgroundColor: '#ccaa00',
-            color: '#000',
-            border: 'none',
-            padding: '0.5rem 1rem',
-            borderRadius: '5px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-          }}
-        >
-          New Quest
-        </button>
+      
+      <div style={{marginTop:'1rem'}}>
+        <p>Health: {health}/{maxHealth}</p>
+        <p>Coins: {coins}</p>
+        <button onClick={()=>move(0,-1)} disabled={gameOver}>Up</button>
+        <button onClick={()=>move(-1,0)} disabled={gameOver}>Left</button>
+        <button onClick={()=>move(1,0)} disabled={gameOver}>Right</button>
+        <button onClick={()=>move(0,1)} disabled={gameOver}>Down</button>
+      </div>
+      <div style={{marginTop:'1rem'}}>
+        <button onClick={healOrUpgrade}>Upgrade (+2 max health) ⚔️ 10 coins</button>
+      </div>
+      <div style={{marginTop:'1rem'}}>
+        <button onClick={reset}>Restart Journey</button>
       </div>
     </div>
   );
 }
+
