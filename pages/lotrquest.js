@@ -1,202 +1,187 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const GRID_SIZE = 7;
-const CENTER = Math.floor(GRID_SIZE / 2);
-const MAX_HEALTH = 20;
-const INITIAL_HEALTH = 5;
-const DRAGON_DAMAGE = 13;
-const XP_FOR_HEALTH_UPGRADE = 10;
+const COLS = 13;
+const ROWS = 10;
+const CENTER_X = Math.floor(COLS / 2);
+const CENTER_Y = Math.floor(ROWS / 2);
+const SMAUG_DAMAGE = 15;
+const START_HEALTH = 5;
+const MAX_HEALTH_CAP = 15;
+const XP_PER_HEALTH = 10;
 
-const generateGrid = () => {
-  const grid = [];
+const ENEMY_TYPES = [
+  { name: 'Goblin', emoji: '👺', max: 3 },
+  { name: 'Orc', emoji: '👹', max: 5 },
+  { name: 'Warg', emoji: '🐺', max: 7 },
+  { name: 'Troll', emoji: '🧌', max: 9 },
+];
 
-  for (let y = 0; y < GRID_SIZE; y++) {
-    const row = [];
-    for (let x = 0; x < GRID_SIZE; x++) {
-      row.push({
-        x,
-        y,
-        revealed: false,
-        type: 'enemy',
-        damage: Math.ceil(Math.random() * 4),
-        defeated: false,
-        xp: 0
-      });
-    }
-    grid.push(row);
-  }
+function randEnemy() {
+  const t = ENEMY_TYPES[Math.floor(Math.random() * ENEMY_TYPES.length)];
+  const str = 1 + Math.floor(Math.random() * t.max);
+  return { type: t.name, emoji: t.emoji, strength: str, defeated: false };
+}
 
-  // Place the dragon in the center
-  grid[CENTER][CENTER] = {
-    x: CENTER,
-    y: CENTER,
-    revealed: true,
-    type: 'dragon',
-    damage: DRAGON_DAMAGE,
-    defeated: false,
-    xp: 50
-  };
+function makeGrid() {
+  const g = Array(ROWS).fill().map((_, y) =>
+    Array(COLS).fill().map((_, x) =>
+      x === CENTER_X && y === CENTER_Y
+        ? { x, y, revealed: true, type: 'smaug', emoji: '🐉', strength: SMAUG_DAMAGE, defeated: false }
+        : { x, y, revealed: false, ...randEnemy() }
+    )
+  );
 
-  // Place 4 palantíri (scouts)
+  // Place 2 palantíri
   let placed = 0;
-  while (placed < 4) {
-    const x = Math.floor(Math.random() * GRID_SIZE);
-    const y = Math.floor(Math.random() * GRID_SIZE);
-    const cell = grid[y][x];
-    if ((x !== CENTER || y !== CENTER) && cell.type === 'enemy') {
-      grid[y][x] = {
-        x,
-        y,
-        revealed: true,
-        type: 'palantir',
-        damage: 0,
-        defeated: false,
-        xp: 0
-      };
+  while (placed < 2) {
+    const px = Math.floor(Math.random() * COLS);
+    const py = Math.floor(Math.random() * ROWS);
+    if ((px !== CENTER_X || py !== CENTER_Y) && !g[py][px].palantir && !g[py][px].revealed) {
+      g[py][px] = { x: px, y: py, revealed: true, type: 'palantir', emoji: '🔮' };
       placed++;
     }
   }
-
-  return grid;
-};
+  return g;
+}
 
 export default function LOTRDragonsweeper() {
   const [grid, setGrid] = useState([]);
-  const [health, setHealth] = useState(INITIAL_HEALTH);
-  const [maxHealth, setMaxHealth] = useState(INITIAL_HEALTH);
+  const [hp, setHP] = useState(START_HEALTH);
+  const [maxHP, setMaxHP] = useState(START_HEALTH);
   const [xp, setXP] = useState(0);
-  const [message, setMessage] = useState("Scout the battlefield and prepare your strength!");
+  const [msg, setMsg] = useState('Use a Palantír to scout, then prepare your assault.');
   const [gameOver, setGameOver] = useState(false);
   const [victory, setVictory] = useState(false);
 
   useEffect(() => {
-    setGrid(generateGrid());
+    resetGame();
   }, []);
 
+  const resetGame = () => {
+    setGrid(makeGrid());
+    setHP(START_HEALTH);
+    setMaxHP(START_HEALTH);
+    setXP(0);
+    setMsg('Use a Palantír to scout, then prepare your assault.');
+    setGameOver(false);
+    setVictory(false);
+  };
+
   const revealArea = (x, y) => {
-    const newGrid = [...grid];
-    const dirs = [
-      [-1, -1], [-1, 0], [-1, 1],
-      [0, -1],          [0, 1],
-      [1, -1], [1, 0], [1, 1]
-    ];
-    dirs.forEach(([dx, dy]) => {
-      const nx = x + dx;
-      const ny = y + dy;
-      if (nx >= 0 && ny >= 0 && nx < GRID_SIZE && ny < GRID_SIZE) {
-        newGrid[ny][nx].revealed = true;
+    const g = grid.map(row => row.map(cell => ({ ...cell })));
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS) {
+          g[ny][nx].revealed = true;
+        }
       }
-    });
-    setGrid(newGrid);
-    setMessage("The palantír reveals nearby threats!");
+    }
+    setGrid(g);
+    setMsg('Palantír reveals nearby threats.');
+  };
+
+  const adjacentSum = (x, y) => {
+    let sum = 0;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if ((dx || dy) && nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS) {
+          const c = grid[ny][nx];
+          if (c.revealed && !c.defeated && c.type !== 'palantir') sum += c.strength;
+        }
+      }
+    }
+    return sum;
   };
 
   const attack = (x, y) => {
-    const newGrid = [...grid];
-    const cell = newGrid[y][x];
-    if (cell.defeated || cell.type === 'palantir') return;
+    if (gameOver) return;
+    const g = grid.map(row => row.map(cell => ({ ...cell })));
+    const cell = g[y][x];
+    if (!cell.revealed || cell.type === 'palantir' || cell.defeated) return;
 
-    if (health > cell.damage) {
-      setHealth(health - cell.damage);
-      setXP(xp + (cell.type === 'dragon' ? cell.xp : cell.damage * 2));
+    if (hp > cell.strength) {
+      const newHP = hp - cell.strength;
+      const gainXP = cell.strength * 2;
+      setHP(newHP);
+      setXP(prev => prev + gainXP);
       cell.defeated = true;
-      cell.revealed = true;
-      setMessage(`Defeated ${cell.type === 'dragon' ? 'the Dragon!' : 'a foe'} and gained XP!`);
-      if (cell.type === 'dragon') {
+      setMsg(`${cell.type} defeated! +${gainXP} XP. Adjacent foes = ${adjacentSum(x, y)}.`);
+      if (cell.type === 'smaug') {
+        setMsg('🏆 You have slain Smaug! Victory is yours!');
         setVictory(true);
         setGameOver(true);
-        setMessage("Victory! You have vanquished the Dragon!");
       }
     } else {
-      setHealth(0);
+      setHP(0);
+      setMsg('You were slain... The quest is lost.');
       setGameOver(true);
-      setMessage("You were slain by a powerful foe. The quest ends here.");
     }
-    setGrid(newGrid);
+    cell.revealed = true;
+    setGrid(g);
   };
 
-  const upgradeHealth = () => {
-    if (xp >= XP_FOR_HEALTH_UPGRADE && maxHealth < MAX_HEALTH) {
-      setXP(xp - XP_FOR_HEALTH_UPGRADE);
-      setMaxHealth(maxHealth + 2);
-      setHealth(health + 2);
-      setMessage("You feel stronger. Max health increased!");
+  const upgradeHP = () => {
+    if (xp >= XP_PER_HEALTH && maxHP < MAX_HEALTH_CAP) {
+      setXP(prev => prev - XP_PER_HEALTH);
+      setMaxHP(prev => prev + 1);
+      setHP(prev => prev + 1);
+      setMsg('Your heart grows braver. +1 Max HP.');
     } else {
-      setMessage("Not enough XP or already at max health.");
+      setMsg('Need more XP or reached max health.');
     }
-  };
-
-  const restart = () => {
-    setGrid(generateGrid());
-    setHealth(INITIAL_HEALTH);
-    setMaxHealth(INITIAL_HEALTH);
-    setXP(0);
-    setGameOver(false);
-    setVictory(false);
-    setMessage("Scout the battlefield and prepare your strength!");
-  };
-
-  const renderTile = (cell) => {
-    let content = '❓';
-    if (cell.revealed || cell.defeated || cell.type === 'palantir') {
-      if (cell.type === 'dragon') content = `🔥${cell.damage}`;
-      else if (cell.type === 'enemy') content = cell.defeated ? '💀' : `👹${cell.damage}`;
-      else if (cell.type === 'palantir') content = '🔮';
-    }
-    return (
-      <div
-        key={`${cell.x}-${cell.y}`}
-        onClick={() => {
-          if (gameOver) return;
-          if (cell.type === 'palantir') revealArea(cell.x, cell.y);
-          else attack(cell.x, cell.y);
-        }}
-        style={{
-          width: 46,
-          height: 46,
-          backgroundColor: cell.revealed || cell.defeated ? '#333' : '#111',
-          border: '1px solid #555',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '0.85rem',
-          cursor: gameOver ? 'default' : 'pointer',
-        }}
-      >
-        {content}
-      </div>
-    );
   };
 
   return (
     <div style={{ fontFamily: 'serif', background: '#000', color: '#eee', padding: '1rem', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', color: '#ccaa00' }}>LOTR: Dragonsweeper</h1>
-      <p style={{ textAlign: 'center' }}>{message}</p>
+      <h1 style={{ textAlign: 'center', color: '#ccaa00' }}>LOTR Dragonsweeper</h1>
+      <p style={{ textAlign: 'center' }}>{msg}</p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${GRID_SIZE}, 46px)`, justifyContent: 'center', gap: '4px', marginBottom: '1rem' }}>
-        {grid.flat().map(renderTile)}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${COLS}, 40px)`,
+        justifyContent: 'center',
+        gap: '2px',
+        marginBottom: '1rem'
+      }}>
+        {grid.flat().map(cell => (
+          <div
+            key={`${cell.x}-${cell.y}`}
+            onClick={() => cell.type === 'palantir' ? revealArea(cell.x, cell.y) : attack(cell.x, cell.y)}
+            style={{
+              width: 40, height: 40,
+              backgroundColor: cell.revealed || cell.defeated ? '#333' : '#111',
+              border: '1px solid #555',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '0.85rem',
+              cursor: gameOver ? 'default' : 'pointer'
+            }}
+          >
+            {cell.revealed || cell.defeated
+              ? cell.type === 'palantir' ? '🔮' :
+                cell.type === 'smaug' ? `🐉${cell.strength}` :
+                cell.defeated ? '💀' :
+                cell.strength
+              : ''}
+          </div>
+        ))}
       </div>
 
       <div style={{ textAlign: 'center' }}>
-        <p>❤️ Health: {health} / {maxHealth}</p>
-        <p>✨ XP: {xp}</p>
+        <p>❤️ HP: {hp} / {maxHP} &nbsp;&nbsp; XP: {xp}</p>
         <button
-          onClick={upgradeHealth}
-          disabled={gameOver}
-          style={{ margin: '0.5rem', padding: '0.5rem 1rem', background: '#224', color: '#fff', border: 'none', borderRadius: '4px' }}
+          onClick={upgradeHP}
+          disabled={gameOver || xp < XP_PER_HEALTH || maxHP >= MAX_HEALTH_CAP}
+          style={{ margin: '0 5px', padding: '5px 10px' }}
         >
-          Upgrade Health (10 XP)
+          Upgrade HP (10 XP)
         </button>
-        <button
-          onClick={restart}
-          style={{ margin: '0.5rem', padding: '0.5rem 1rem', background: '#aa0', color: '#000', border: 'none', borderRadius: '4px' }}
-        >
-          Restart Quest
-        </button>
-        {gameOver && !victory && <p style={{ color: '#f55' }}>Game Over</p>}
-        {victory && <p style={{ color: '#0f0' }}>Victory!</p>}
+        <button onClick={resetGame} style={{ margin: '0 5px', padding: '5px 10px' }}>Restart</button>
+        {gameOver && (
+          <p style={{ color: victory ? '#8f8' : '#f88' }}>{victory ? 'Victory!' : 'Game Over'}</p>
+        )}
       </div>
     </div>
   );
 }
-
