@@ -21,6 +21,8 @@
     "react-scroll": "^1.8.9",
     "tailwind": "^4.0.0",
     "video.js": "^8.0.4"
+    "@emailjs/browser": "^3.11.0"
+
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
