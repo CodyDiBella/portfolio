@@ -1,23 +1,28 @@
 // pages/duncan.js
 import { useState, useEffect } from "react";
 
-const EMAILJS_SERVICE_ID = "service_snxpmua";
-const EMAILJS_TEMPLATE_ID = "template_f8w3k1m";
-const EMAILJS_PUBLIC_KEY = "1YtH3_3L4agOfqLYw";
-
 const Duncan = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [events, setEvents] = useState(() => {
-    const stored = localStorage.getItem("duncanEvents");
-    return stored ? JSON.parse(stored) : {};
-  });
-
+  const [events, setEvents] = useState({});
   const [lastEventDays, setLastEventDays] = useState(0);
   const [averageInterval, setAverageInterval] = useState(0);
+  const [isClient, setIsClient] = useState(false); // track if running in browser
 
-  // Helper functions
+  // Only run localStorage logic on client
+  useEffect(() => {
+    setIsClient(true);
+    const stored = localStorage.getItem("duncanEvents");
+    if (stored) setEvents(JSON.parse(stored));
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+    localStorage.setItem("duncanEvents", JSON.stringify(events));
+    updateStats();
+  }, [events, isClient]);
+
   const daysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
 
   const formatDateKey = (year, month, day) =>
@@ -27,11 +32,13 @@ const Duncan = () => {
     const eventDates = Object.keys(events)
       .map((key) => new Date(key))
       .sort((a, b) => a - b);
+
     if (eventDates.length === 0) {
       setLastEventDays(0);
       setAverageInterval(0);
       return;
     }
+
     const lastEvent = eventDates[eventDates.length - 1];
     const diff = Math.floor(
       (today - lastEvent) / (1000 * 60 * 60 * 24)
@@ -45,25 +52,18 @@ const Duncan = () => {
 
     let totalInterval = 0;
     for (let i = 1; i < eventDates.length; i++) {
-      totalInterval += (eventDates[i] - eventDates[i - 1]) / (1000 * 60 * 60 * 24);
+      totalInterval +=
+        (eventDates[i] - eventDates[i - 1]) / (1000 * 60 * 60 * 24);
     }
     setAverageInterval(Math.round(totalInterval / (eventDates.length - 1)));
   };
-
-  useEffect(() => {
-    updateStats();
-    localStorage.setItem("duncanEvents", JSON.stringify(events));
-  }, [events]);
 
   const toggleEvent = (day) => {
     const key = formatDateKey(currentYear, currentMonth, day);
     setEvents((prev) => {
       const newEvents = { ...prev };
-      if (newEvents[key]) {
-        delete newEvents[key];
-      } else {
-        newEvents[key] = true;
-      }
+      if (newEvents[key]) delete newEvents[key];
+      else newEvents[key] = true;
       return newEvents;
     });
   };
@@ -87,7 +87,6 @@ const Duncan = () => {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  // Render
   const renderCalendar = () => {
     const totalDays = daysInMonth(currentMonth, currentYear);
     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
@@ -123,19 +122,23 @@ const Duncan = () => {
       );
     }
 
-    return <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>{days}</div>;
+    return (
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
+        {days}
+      </div>
+    );
   };
 
   const renderPastEvents = () => {
-    const sortedKeys = Object.keys(events).sort((a, b) => new Date(b) - new Date(a));
+    const sortedKeys = Object.keys(events).sort(
+      (a, b) => new Date(b) - new Date(a)
+    );
     if (sortedKeys.length === 0) return <p>No past events</p>;
 
     return (
       <ul>
         {sortedKeys.map((key) => (
-          <li key={key}>
-            {key} 🐾
-          </li>
+          <li key={key}>{key} 🐾</li>
         ))}
       </ul>
     );
@@ -154,16 +157,25 @@ const Duncan = () => {
         </div>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "10px",
+        }}
+      >
         <button onClick={prevMonth}>◀️ Prev</button>
-        <h2>{monthNames[currentMonth]} {currentYear}</h2>
+        <h2>
+          {monthNames[currentMonth]} {currentYear}
+        </h2>
         <button onClick={nextMonth}>Next ▶️</button>
       </div>
 
-      {renderCalendar()}
+      {isClient && renderCalendar()}
 
       <h3 style={{ marginTop: "20px" }}>Past Events:</h3>
-      {renderPastEvents()}
+      {isClient && renderPastEvents()}
     </div>
   );
 };
