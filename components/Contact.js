@@ -9,7 +9,6 @@ import { Input, Textarea, Button } from "@nextui-org/react";
 import ReCAPTCHA from "react-google-recaptcha";
 
 const Contact = () => {
-  const formRef = useRef();
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -17,74 +16,68 @@ const Contact = () => {
     subject: "",
     message: "",
   });
-  const [captchaToken, setCaptchaToken] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
-  const [lastSubmitTime, setLastSubmitTime] = useState(0);
+  const [captchaToken, setCaptchaToken] = useState(null);
 
-  // Validate form before sending
-  const validateForm = () => {
-    return (
-      formData.name.trim() &&
-      formData.email.trim() &&
-      formData.subject.trim() &&
-      formData.message.trim()
-    );
-  };
+  const recaptchaRef = useRef();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleCaptcha = (token) => {
+    setCaptchaToken(token);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    // reCAPTCHA check
     if (!captchaToken) {
-      alert("⚠️ Please verify that you're not a robot.");
-      return;
-    }
-
-    // Simple rate limiting: 30 sec between submissions
-    const now = Date.now();
-    if (now - lastSubmitTime < 30000) {
-      alert("⏱️ Please wait 30 seconds before sending again.");
-      return;
-    }
-
-    // Prevent empty or spammy submissions
-    if (!validateForm()) {
-      alert("❌ Please fill in all required fields before submitting.");
+      alert("Please verify you are not a robot.");
       return;
     }
 
     setIsSubmitting(true);
 
-    try {
-      await emailjs.sendForm(
+    emailjs
+      .sendForm(
         "service_snxpmua",
         "template_pwup3ho",
-        formRef.current,
+        e.target,
         "1YtH3_3L4agOfqLYw"
-      );
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          setSubmitStatus("success");
 
-      setFormData({
-        name: "",
-        phone: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
-      setCaptchaToken(null);
-      setSubmitStatus("success");
-      setLastSubmitTime(now);
-    } catch (error) {
-      console.error(error.text);
-      setSubmitStatus("error");
-    } finally {
-      setIsSubmitting(false);
-    }
+          // ✅ Clear the success message after 5 seconds
+          setTimeout(() => {
+            setSubmitStatus(null);
+          }, 5000);
+
+          // ✅ Reset the form
+          setFormData({
+            name: "",
+            phone: "",
+            email: "",
+            subject: "",
+            message: "",
+          });
+
+          // ✅ Reset captcha
+          if (recaptchaRef.current) {
+            recaptchaRef.current.reset();
+          }
+          setCaptchaToken(null);
+        },
+        (error) => {
+          console.log(error.text);
+          setSubmitStatus("error");
+        }
+      )
+      .finally(() => setIsSubmitting(false));
   };
 
   return (
@@ -94,9 +87,7 @@ const Contact = () => {
           Contact
         </p>
         <h2 className="py-4">Get In Touch</h2>
-
         <div className="grid lg:grid-cols-5 gap-8">
-          {/* Left Side */}
           <div className="col-span-3 lg:col-span-2 w-full h-full shadow-xl shadow-gray-400 rounded-xl p-4">
             <div className="lg:p-4 h-full">
               <div>
@@ -178,32 +169,27 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* Right Side - Contact Form */}
+          {/* ---------- FORM ---------- */}
           <div className="col-span-3 w-full h-auto shadow-xl shadow-gray-400 rounded-xl lg:p-4">
             <div className="p-4">
-              <form ref={formRef} onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit}>
                 <div className="grid md:grid-cols-2 gap-4 w-full py-2">
-                  <div className="flex flex-col">
-                    <Input
-                      type="text"
-                      label="Name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <Input
-                      type="text"
-                      label="Phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                    />
-                  </div>
+                  <Input
+                    type="text"
+                    label="Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                  <Input
+                    type="text"
+                    label="Phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
                 </div>
-
                 <div className="flex flex-col py-2">
                   <Input
                     type="email"
@@ -214,7 +200,6 @@ const Contact = () => {
                     required
                   />
                 </div>
-
                 <div className="flex flex-col py-2">
                   <Input
                     type="text"
@@ -225,7 +210,6 @@ const Contact = () => {
                     required
                   />
                 </div>
-
                 <div className="flex flex-col py-2">
                   <Textarea
                     rows="10"
@@ -238,10 +222,11 @@ const Contact = () => {
                 </div>
 
                 {/* ✅ reCAPTCHA */}
-                <div className="py-4 flex justify-center">
+                <div className="py-4">
                   <ReCAPTCHA
                     sitekey="6LcGCusrAAAAAGe-JYqeYSciOJwmSbzr9olhe2Fy"
-                    onChange={(token) => setCaptchaToken(token)}
+                    onChange={handleCaptcha}
+                    ref={recaptchaRef}
                   />
                 </div>
 
@@ -257,8 +242,9 @@ const Contact = () => {
                 )}
 
                 <button
-                  className="w-full p-4 text-gray-100 mt-4 bg-[#8746cd] rounded-lg"
+                  type="submit"
                   disabled={isSubmitting}
+                  className="w-full p-4 text-gray-100 mt-4 bg-[#8746cd] rounded-lg"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </button>
