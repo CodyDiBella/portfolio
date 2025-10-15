@@ -17,8 +17,9 @@ const Contact = () => {
     email: "",
     subject: "",
     message: "",
-    botField: "", // honeypot
+    botField: "",
   });
+  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [captchaValue, setCaptchaValue] = useState(null);
@@ -40,12 +41,32 @@ const Contact = () => {
     setCaptchaValue(value);
   };
 
+  // ✅ Validate form fields before submit
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Enter a valid email";
+    if (!formData.subject.trim()) newErrors.subject = "Subject is required";
+    if (!formData.message.trim()) newErrors.message = "Message is required";
+    return newErrors;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (formData.botField) {
       console.warn("Bot submission detected. Ignoring.");
       return;
+    }
+
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    } else {
+      setErrors({});
     }
 
     if (!captchaValue) {
@@ -175,20 +196,26 @@ const Contact = () => {
                 />
 
                 <div className="grid md:grid-cols-2 gap-4 w-full py-2">
-                  <Input
-                    type="text"
-                    label="Name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                  <Input
-                    type="text"
-                    label="Phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                  />
+                  <div>
+                    <Input
+                      type="text"
+                      label="Name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      status={errors.name ? "error" : "default"}
+                    />
+                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                  </div>
+                  <div>
+                    <Input
+                      type="text"
+                      label="Phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex flex-col py-2">
@@ -198,7 +225,9 @@ const Contact = () => {
                     label="Email"
                     value={formData.email}
                     onChange={handleChange}
+                    status={errors.email ? "error" : "default"}
                   />
+                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
 
                 <div className="flex flex-col py-2">
@@ -208,7 +237,9 @@ const Contact = () => {
                     label="Subject"
                     value={formData.subject}
                     onChange={handleChange}
+                    status={errors.subject ? "error" : "default"}
                   />
+                  {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject}</p>}
                 </div>
 
                 <div className="flex flex-col py-2">
@@ -218,7 +249,9 @@ const Contact = () => {
                     label="Message"
                     value={formData.message}
                     onChange={handleChange}
+                    status={errors.message ? "error" : "default"}
                   />
+                  {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
                 </div>
 
                 {/* reCAPTCHA */}
